@@ -217,6 +217,8 @@
             ClientSize = new Size(366, 363);
             Controls.Add(button1);
             Controls.Add(groupBox1);
+            MaximumSize = new Size(382, 402);
+            MinimumSize = new Size(382, 402);
             Name = "BarbelBarPlugin";
             Text = "BarbellBarPlugin";
             Load += BarbelBarPlugin_Load;

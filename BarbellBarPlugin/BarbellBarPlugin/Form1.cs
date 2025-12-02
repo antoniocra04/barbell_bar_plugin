@@ -11,6 +11,7 @@ using BarbellBarPlugin.Validation;
 
 namespace BarbellBarPlugin
 {
+    //TODO: XML
     public partial class BarbelBarPlugin : Form
     {
         private readonly BarBuilder _builder;
@@ -136,6 +137,7 @@ namespace BarbellBarPlugin
         {
             string text = textBox.Text.Trim().Replace(',', '.');
 
+            //TODO: RSDN
             if (!double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
             {
                 string msg = $"Некорректное число в поле \"{displayName}\".";
@@ -178,6 +180,7 @@ namespace BarbellBarPlugin
         /// </summary>
         private void ShowValidationErrors(IReadOnlyList<ValidationError> errors)
         {
+            //TODO: RSDN
             var sb = new StringBuilder();
             sb.AppendLine("Обнаружены ошибки ввода:");
             sb.AppendLine();

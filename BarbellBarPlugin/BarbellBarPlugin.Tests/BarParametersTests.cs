@@ -5,9 +5,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BarbellBarPlugin.Tests
 {
+    //TODO: XML
     [TestClass]
     public class BarParametersTests
     {
+        //TODO: description
         [TestMethod]
         public void Constructor_AssignsProperties()
         {
@@ -17,6 +19,7 @@ namespace BarbellBarPlugin.Tests
             double separatorDiameter = 40;
             double sleeveLength = 350;
 
+            //TODO: RSDN
             var p = new BarParameters(
                 sleeveDiameter,
                 separatorLength,
@@ -31,9 +34,11 @@ namespace BarbellBarPlugin.Tests
             Assert.AreEqual(sleeveLength, p.SleeveLength);
         }
 
+        //TODO: description
         [TestMethod]
         public void TotalLength_CalculatedCorrectly()
         {
+            //TODO: RSDN
             var p = new BarParameters(
                 sleeveDiameter: 30,
                 separatorLength: 50,
@@ -46,9 +51,11 @@ namespace BarbellBarPlugin.Tests
             Assert.AreEqual(2000.0, total, 1e-6);
         }
 
+        //TODO: description
         [TestMethod]
         public void Validator_ValidParameters_ReturnsNoErrors()
         {
+            //TODO: RSDN
             var p = new BarParameters(
                 sleeveDiameter: 30,  
                 separatorLength: 50,  

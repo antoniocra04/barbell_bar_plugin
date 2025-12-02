@@ -10,6 +10,7 @@ namespace BarbellBarPlugin.Kompas
     /// </summary>
     public class Wrapper
     {
+        //TODO: XML
         private KompasObject _kompas;
         private ksDocument3D _doc3D;
         private ksPart _part;
@@ -51,10 +52,13 @@ namespace BarbellBarPlugin.Kompas
         /// <summary>
         /// Создаёт цилиндр вдоль оси X между startX и endX (startX >= 0, endX > startX).
         /// </summary>
+        /// //TODO: RSDN
         public virtual void CreateCylindricalSegment(double startX, double endX, double diameter, string name)
         {
+            //TODO: refactor
             double length = endX - startX;
             if (length <= 0.001)
+                //TODO: refactor
                 throw new Exception("Нулевая или отрицательная длина цилиндра.");
 
             // 1. Базовая плоскость YOZ

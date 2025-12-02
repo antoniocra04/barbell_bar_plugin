@@ -6,9 +6,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BarbellBarPlugin.Tests
 {
+    //TODO: XML
     [TestClass]
     public class BarBuilderTests
     {
+        //TODO: description
         [TestMethod]
         public void Build_CallsAttachAndCreateDocument()
         {
@@ -28,6 +30,7 @@ namespace BarbellBarPlugin.Tests
             Assert.IsTrue(fake.CreateDocCalled, "Ожидался вызов CreateDocument3D.");
         }
 
+        //TODO: description
         [TestMethod]
         public void Build_CreatesFiveSegments_InCorrectOrder()
         {
@@ -54,6 +57,7 @@ namespace BarbellBarPlugin.Tests
             Assert.AreEqual("RightSleeve", segments[4].Name);
         }
 
+        //TODO: description
         [TestMethod]
         public void Build_SegmentsHaveCorrectCoordinatesAndDiameters()
         {

@@ -26,6 +26,7 @@
         public double TotalLength =>
             2 * SleeveLength + 2 * SeparatorLength + HandleLength;
 
+        //TODO: XML
         public BarParameters(
             double sleeveDiameter,
             double separatorLength,

@@ -4,6 +4,7 @@ using BarbellBarPlugin.Model;
 
 namespace BarbellBarPlugin.Validation
 {
+    //TODO: RSDN
     public class ValidationError
     {
         public string FieldName { get; }
@@ -21,6 +22,7 @@ namespace BarbellBarPlugin.Validation
     /// </summary>
     public static class BarParametersValidator
     {
+        //TODO: XML
         private const double SleeveDiameterMin = 25;
         private const double SleeveDiameterMax = 40;
 
@@ -36,6 +38,8 @@ namespace BarbellBarPlugin.Validation
         private const double SleeveLengthMin = 320;
         private const double SleeveLengthMax = 420;
 
+        //TODO: XML
+        //TODO: RSDN
         public static IReadOnlyList<ValidationError> Validate(BarParameters p)
         {
             var errors = new List<ValidationError>();
@@ -72,6 +76,7 @@ namespace BarbellBarPlugin.Validation
             return errors;
         }
 
+        //TODO: XML
         private static void CheckRange(
             double value,
             double min,

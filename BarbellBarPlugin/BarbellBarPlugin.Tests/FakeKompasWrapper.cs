@@ -9,6 +9,8 @@ namespace BarbellBarPlugin.Tests
     /// </summary>
     public class FakeKompasWrapper : Wrapper
     {
+        //TODO: XML
+        //TODO: RSDN
         public record Segment(double StartX, double EndX, double Diameter, string Name);
 
         public List<Segment> Segments { get; } = new();

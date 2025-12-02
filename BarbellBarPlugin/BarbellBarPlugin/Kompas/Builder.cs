@@ -9,14 +9,18 @@ namespace BarbellBarPlugin.Kompas
     /// </summary>
     public class BarBuilder
     {
+        //TODO: XML
         private readonly Wrapper _wrapper;
+        //TODO: XML
         private BarParameters _parameters = null!;
 
+        //TODO: XML
         public BarBuilder(Wrapper wrapper)
         {
             _wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
         }
 
+        //TODO: XML
         public BarParameters CurrentParameters => _parameters;
 
         /// <summary>
@@ -42,13 +46,16 @@ namespace BarbellBarPlugin.Kompas
             double handleLen = _parameters.HandleLength;
 
             double handleDiameter =
+                //TODO: RSDN
                 Math.Min(_parameters.SleeveDiameter, _parameters.SeparatorDiameter) - 3.0;
 
             if (handleDiameter <= 0)
             {
+                //TODO: RSDN
                 handleDiameter = _parameters.SeparatorDiameter * 0.8;
             }
 
+            //TODO: WTF?
             double x = 0.0;
 
             double leftSleeveStart = x;

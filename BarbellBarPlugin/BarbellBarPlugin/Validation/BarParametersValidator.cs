@@ -4,7 +4,7 @@ using BarbellBarPlugin.Model;
 
 namespace BarbellBarPlugin.Validation
 {
-    //TODO:+ RSDN
+    //TODO: RSDN
     /// <summary>
     /// Описывает ошибку валидации отдельного параметра грифа.
     /// </summary>
@@ -16,6 +16,7 @@ namespace BarbellBarPlugin.Validation
         /// <summary>Текст ошибки валидации.</summary>
         public string Message { get; }
 
+        //TODO: XML
         public ValidationError(string fieldName, string message)
         {
             FieldName = fieldName;
@@ -28,7 +29,7 @@ namespace BarbellBarPlugin.Validation
     /// </summary>
     public static class BarParametersValidator
     {
-        //TODO:+ XML
+        //TODO: XML
         /// <summary>Минимальный и максимальный диаметр посадочной части (мм).</summary>
         private const double SleeveDiameterMin = 25;
         private const double SleeveDiameterMax = 40;
@@ -49,8 +50,7 @@ namespace BarbellBarPlugin.Validation
         private const double SleeveLengthMin = 320;
         private const double SleeveLengthMax = 420;
 
-        //TODO:+ XML
-        //TODO:+ RSDN
+        //TODO: RSDN
         /// <summary>
         /// Проверяет параметры грифа и возвращает список ошибок валидации.
         /// </summary>
@@ -105,6 +105,7 @@ namespace BarbellBarPlugin.Validation
             {
                 errors.Add(new ValidationError(
                     "DiametrSeparator",
+                    //TODO: RSDN
                     "Диаметр разделителя должен быть больше диаметра посадочной части."));
             }
 
@@ -113,13 +114,13 @@ namespace BarbellBarPlugin.Validation
             {
                 errors.Add(new ValidationError(
                     "LengthHandle",
+                    //TODO: RSDN
                     "Длинна ручки должна быть больше суммарной длины двух разделителей."));
             }
 
             return errors;
         }
 
-        //TODO:+ XML
         /// <summary>
         /// Проверяет параметр на попадание в допустимый числовой диапазон.
         /// </summary>
@@ -127,6 +128,7 @@ namespace BarbellBarPlugin.Validation
         /// <param name="min">Минимально допустимое значение, включительно.</param>
         /// <param name="max">Максимально допустимое значение, включительно.</param>
         /// <param name="fieldName">Имя поля в UI (для привязки ошибки).</param>
+        /// //TODO: RSDN
         /// <param name="displayName">Название параметра для отображения в сообщении об ошибке.</param>
         /// <param name="errors">Список ошибок, в который добавляется сообщение в случае нарушения диапазона.</param>
         private static void CheckRange(

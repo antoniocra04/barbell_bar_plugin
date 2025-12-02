@@ -10,6 +10,7 @@ namespace BarbellBarPlugin.Tests
     /// </summary>
     public class FakeKompasWrapper : Wrapper
     {
+        //TODO: RSDN
         /// <summary>
         /// Описание построенного цилиндрического сегмента грифа.
         /// </summary>
@@ -47,6 +48,7 @@ namespace BarbellBarPlugin.Tests
         }
 
         /// <inheritdoc />
+        /// //TODO: RSDN
         public override void CreateCylindricalSegment(double startX, double endX, double diameter, string name)
         {
             Segments.Add(new Segment(startX, endX, diameter, name));

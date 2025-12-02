@@ -27,7 +27,6 @@
         public double TotalLength =>
             2 * SleeveLength + 2 * SeparatorLength + HandleLength;
 
-        //TODO:+ XML
         /// <summary>
         /// Создаёт набор параметров грифа штанги.
         /// </summary>

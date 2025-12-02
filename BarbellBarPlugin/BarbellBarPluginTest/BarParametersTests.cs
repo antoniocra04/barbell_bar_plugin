@@ -12,6 +12,7 @@ namespace BarbellBarPlugin.Tests
     [TestFixture]
     public class BarParametersTests
     {
+        //TODO: description
         /// <summary>
         /// Конструктор корректно инициализирует все свойства модели.
         /// </summary>
@@ -44,6 +45,7 @@ namespace BarbellBarPlugin.Tests
             });
         }
 
+        //TODO: description
         /// <summary>
         /// Свойство TotalLength корректно возвращает суммарную длину грифа.
         /// </summary>
@@ -65,6 +67,7 @@ namespace BarbellBarPlugin.Tests
             Assert.That(total, Is.EqualTo(2000.0).Within(1e-6));
         }
 
+        //TODO: description
         /// <summary>
         /// Для набора корректных параметров валидатор не возвращает ошибок.
         /// </summary>
@@ -87,6 +90,8 @@ namespace BarbellBarPlugin.Tests
             Assert.That(errors.Count, Is.EqualTo(0));
         }
 
+        //TODO: duplication
+        //TODO: description
         /// <summary>
         /// При выходе диаметра посадочной части за допустимый диапазон появляется ошибка.
         /// </summary>
@@ -106,6 +111,8 @@ namespace BarbellBarPlugin.Tests
             Assert.That(errors.Any(e => e.FieldName == "DiametrSleeve"), Is.True);
         }
 
+        //TODO: duplication
+        //TODO: description
         /// <summary>
         /// При выходе длины разделителя за допустимый диапазон появляется ошибка.
         /// </summary>
@@ -124,7 +131,9 @@ namespace BarbellBarPlugin.Tests
 
             Assert.That(errors.Any(e => e.FieldName == "LengthSeparator"), Is.True);
         }
+        //TODO: duplication
 
+        //TODO: description
         /// <summary>
         /// При выходе длины рукояти за допустимый диапазон появляется ошибка.
         /// </summary>
@@ -143,7 +152,9 @@ namespace BarbellBarPlugin.Tests
 
             Assert.That(errors.Any(e => e.FieldName == "LengthHandle"), Is.True);
         }
+        //TODO: duplication
 
+        //TODO: description
         /// <summary>
         /// При выходе диаметра разделителя за допустимый диапазон появляется ошибка.
         /// </summary>
@@ -162,7 +173,9 @@ namespace BarbellBarPlugin.Tests
 
             Assert.That(errors.Any(e => e.FieldName == "DiametrSeparator"), Is.True);
         }
+        //TODO: duplication
 
+        //TODO: description
         /// <summary>
         /// При выходе длины посадочной части за допустимый диапазон появляется ошибка.
         /// </summary>
@@ -181,7 +194,9 @@ namespace BarbellBarPlugin.Tests
 
             Assert.That(errors.Any(e => e.FieldName == "LengthSleeve"), Is.True);
         }
+        //TODO: duplication
 
+        //TODO: description
         /// <summary>
         /// Если диаметр разделителя не больше диаметра посадочной части — добавляется ошибка.
         /// </summary>
@@ -200,7 +215,9 @@ namespace BarbellBarPlugin.Tests
 
             Assert.That(errors.Any(e => e.FieldName == "DiametrSeparator"), Is.True);
         }
+        //TODO: duplication
 
+        //TODO: description
         /// <summary>
         /// Если рукоять короче суммы двух разделителей — валидатор добавляет ошибку.
         /// </summary>

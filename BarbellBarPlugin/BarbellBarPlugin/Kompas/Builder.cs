@@ -1,30 +1,46 @@
 ﻿using System;
-using BarbellBarPlugin.Kompas;
 using BarbellBarPlugin.Model;
 
 namespace BarbellBarPlugin.Kompas
 {
     /// <summary>
-    /// Оркестратор построения модели грифа.
+    /// Оркестратор построения 3D-модели грифа в KOMPAS 3D.
+    /// Разбивает гриф на пять цилиндрических сегментов по оси X и отдаёт их обёртке KOMPAS.
     /// </summary>
     public class BarBuilder
     {
-        //TODO: XML
+        //TODO:+ XML
+        /// <summary>
+        /// Обёртка над KOMPAS API, выполняющая построение сегментов.
+        /// </summary>
         private readonly Wrapper _wrapper;
-        //TODO: XML
+
+        //TODO:+ XML
+        /// <summary>
+        /// Параметры грифа, использованные при последнем построении.
+        /// </summary>
         private BarParameters _parameters = null!;
 
-        //TODO: XML
+        //TODO:+ XML
+        /// <summary>
+        /// Создаёт новый экземпляр <see cref="BarBuilder"/>.
+        /// </summary>
+        /// <param name="wrapper">Объект, инкапсулирующий вызовы KOMPAS API.</param>
+        /// <exception cref="ArgumentNullException">Если <paramref name="wrapper"/> равен null.</exception>
         public BarBuilder(Wrapper wrapper)
         {
             _wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
         }
 
-        //TODO: XML
+        //TODO:+ XML
+        /// <summary>
+        /// Параметры грифа, использованные при последнем построении.
+        /// </summary>
         public BarParameters CurrentParameters => _parameters;
 
         /// <summary>
-        /// Главный сценарий построения модели.
+        /// Главный сценарий построения.
+        /// Подключает KOMPAS, создаёт документ и строит все сегменты грифа.
         /// </summary>
         public void Build(BarParameters parameters)
         {
@@ -37,76 +53,76 @@ namespace BarbellBarPlugin.Kompas
         }
 
         /// <summary>
-        /// Строит гриф вдоль оси X
+        /// Строит гриф вдоль оси X без использования промежуточной переменной x.
+        /// Все координаты считаются явно от нуля.
         /// </summary>
         private void BuildBar()
         {
-            double sleeveLen = _parameters.SleeveLength;
-            double sepLen = _parameters.SeparatorLength;
-            double handleLen = _parameters.HandleLength;
+            double Ls = _parameters.SleeveLength;     // длинна посадочной части
+            double Ld = _parameters.SeparatorLength;  // длинна разделителя
+            double Lh = _parameters.HandleLength;     // длинна ручки
 
+            //TODO:+ RSDN
+            // Диаметр рукояти должен быть меньше, чем диаметр посадки/разделителя.
             double handleDiameter =
-                //TODO: RSDN
                 Math.Min(_parameters.SleeveDiameter, _parameters.SeparatorDiameter) - 3.0;
 
+            //TODO:+ RSDN
+            // Запасной вариант: если параметры кривые — берем 80% от разделителя.
             if (handleDiameter <= 0)
-            {
-                //TODO: RSDN
                 handleDiameter = _parameters.SeparatorDiameter * 0.8;
-            }
 
-            //TODO: WTF?
-            double x = 0.0;
+            //TODO:+ WTF
 
-            double leftSleeveStart = x;
-            double leftSleeveEnd = leftSleeveStart + sleeveLen;
-            x = leftSleeveEnd;
+            // 1. Левая посадка
+            double leftSleeveStart = 0.0;
+            double leftSleeveEnd = Ls;
 
-            double leftSepStart = x;
-            double leftSepEnd = leftSepStart + sepLen;
-            x = leftSepEnd;
+            // 2. Левый разделитель
+            double leftSepStart = leftSleeveEnd;
+            double leftSepEnd = leftSepStart + Ld;
 
-            double handleStart = x;
-            double handleEnd = handleStart + handleLen;
-            x = handleEnd;
+            // 3. Рукоять
+            double handleStart = leftSepEnd;
+            double handleEnd = handleStart + Lh;
 
-            double rightSepStart = x;
-            double rightSepEnd = rightSepStart + sepLen;
-            x = rightSepEnd;
+            // 4. Правый разделитель
+            double rightSepStart = handleEnd;
+            double rightSepEnd = rightSepStart + Ld;
 
-            double rightSleeveStart = x;
-            double rightSleeveEnd = rightSleeveStart + sleeveLen;
+            // 5. Правая посадка
+            double rightSleeveStart = rightSepEnd;
+            double rightSleeveEnd = rightSleeveStart + Ls;
 
 
-            // 1. Левая посадочная часть
+            //
+            // Построение сегментов в KOMPAS
+            //
+
             _wrapper.CreateCylindricalSegment(
                 leftSleeveStart,
                 leftSleeveEnd,
                 _parameters.SleeveDiameter,
                 "LeftSleeve");
 
-            // 2. Левый разделитель
             _wrapper.CreateCylindricalSegment(
                 leftSepStart,
                 leftSepEnd,
                 _parameters.SeparatorDiameter,
                 "LeftSeparator");
 
-            // 3. Ручка
             _wrapper.CreateCylindricalSegment(
                 handleStart,
                 handleEnd,
                 handleDiameter,
                 "Handle");
 
-            // 4. Правый разделитель
             _wrapper.CreateCylindricalSegment(
                 rightSepStart,
                 rightSepEnd,
                 _parameters.SeparatorDiameter,
                 "RightSeparator");
 
-            // 5. Правая посадочная часть
             _wrapper.CreateCylindricalSegment(
                 rightSleeveStart,
                 rightSleeveEnd,

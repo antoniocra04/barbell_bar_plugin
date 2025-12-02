@@ -22,11 +22,20 @@
 
         /// <summary>
         /// Полная длина грифа, мм:
+        /// 2 · длина посадочной части + 2 · длина разделителя + длина ручки.
         /// </summary>
         public double TotalLength =>
             2 * SleeveLength + 2 * SeparatorLength + HandleLength;
 
-        //TODO: XML
+        //TODO:+ XML
+        /// <summary>
+        /// Создаёт набор параметров грифа штанги.
+        /// </summary>
+        /// <param name="sleeveDiameter">Диаметр посадочной части, мм.</param>
+        /// <param name="separatorLength">Длина разделителя, мм.</param>
+        /// <param name="handleLength">Длина ручки (хвата), мм.</param>
+        /// <param name="separatorDiameter">Диаметр разделителя, мм.</param>
+        /// <param name="sleeveLength">Длина посадочной части, мм.</param>
         public BarParameters(
             double sleeveDiameter,
             double separatorLength,

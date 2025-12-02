@@ -7,16 +7,29 @@ namespace BarbellBarPlugin.Kompas
 {
     /// <summary>
     /// Обёртка для работы с KOMPAS API5.
+    /// Инкапсулирует запуск/подключение KOMPAS и базовые операции 3D-моделирования.
     /// </summary>
     public class Wrapper
     {
-        //TODO: XML
+        //TODO:+ XML
+        /// <summary>
+        /// Экземпляр приложения KOMPAS.
+        /// </summary>
         private KompasObject _kompas;
+
+        /// <summary>
+        /// Текущий трёхмерный документ.
+        /// </summary>
         private ksDocument3D _doc3D;
+
+        /// <summary>
+        /// Верхняя деталь (part) текущего 3D-документа.
+        /// </summary>
         private ksPart _part;
 
         /// <summary>
-        /// Запускает или присоединяется к Компасу.
+        /// Запускает KOMPAS, если он ещё не запущен,
+        /// или присоединяется к уже работающему экземпляру.
         /// </summary>
         public virtual void AttachOrRunCAD()
         {
@@ -37,7 +50,7 @@ namespace BarbellBarPlugin.Kompas
         }
 
         /// <summary>
-        /// Создает новый 3D-документ.
+        /// Создаёт новый 3D-документ и получает ссылку на верхний Part.
         /// </summary>
         public virtual void CreateDocument3D()
         {
@@ -50,16 +63,19 @@ namespace BarbellBarPlugin.Kompas
         }
 
         /// <summary>
-        /// Создаёт цилиндр вдоль оси X между startX и endX (startX >= 0, endX > startX).
+        /// Создаёт цилиндр вдоль оси X между <paramref name="startX"/> и <paramref name="endX"/>.
+        /// Предполагается, что <paramref name="startX"/> ≥ 0 и <paramref name="endX"/> &gt; <paramref name="startX"/>.
         /// </summary>
-        /// //TODO: RSDN
+        //TODO:+ RSDN
         public virtual void CreateCylindricalSegment(double startX, double endX, double diameter, string name)
         {
-            //TODO: refactor
+            //TODO:+ refactor
+            // Вычисляем длину и проверяем на минимально допустимое значение.
+            const double MinLength = 0.001;
+
             double length = endX - startX;
-            if (length <= 0.001)
-                //TODO: refactor
-                throw new Exception("Нулевая или отрицательная длина цилиндра.");
+            if (length <= MinLength)
+                throw new Exception($"Недопустимая длина цилиндра: {length:0.###} мм.");
 
             // 1. Базовая плоскость YOZ
             ksEntity basePlane = _part.GetDefaultEntity((short)Obj3dType.o3d_planeYOZ);
@@ -68,11 +84,11 @@ namespace BarbellBarPlugin.Kompas
             ksEntity offsetPlane = _part.NewEntity((short)Obj3dType.o3d_planeOffset);
             var offsetDef = (ksPlaneOffsetDefinition)offsetPlane.GetDefinition();
             offsetDef.SetPlane(basePlane);
-            offsetDef.direction = true;      
+            offsetDef.direction = true;     
             offsetDef.offset = startX;       
             offsetPlane.Create();
 
-            // 3. Эскиз окружности на этой плоскости
+            // 3. Эскиз окружности на смещённой плоскости
             ksEntity sketch = _part.NewEntity((short)Obj3dType.o3d_sketch);
             var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
             sketchDef.SetPlane(offsetPlane);
@@ -82,7 +98,7 @@ namespace BarbellBarPlugin.Kompas
             doc2D.ksCircle(0, 0, diameter / 2.0, 1);
             sketchDef.EndEdit();
 
-            // 4. Выдавливание вдоль +X
+            // 4. Выдавливание вдоль +X на длину сегмента
             ksEntity extrude = _part.NewEntity((short)Obj3dType.o3d_baseExtrusion);
             var extrudeDef = (ksBaseExtrusionDefinition)extrude.GetDefinition();
 

@@ -9,30 +9,27 @@ namespace BarbellBarPlugin.Kompas
     /// </summary>
     public class BarBuilder
     {
-        //TODO:+ XML
         /// <summary>
         /// Обёртка над KOMPAS API, выполняющая построение сегментов.
         /// </summary>
         private readonly Wrapper _wrapper;
 
-        //TODO:+ XML
         /// <summary>
         /// Параметры грифа, использованные при последнем построении.
         /// </summary>
         private BarParameters _parameters = null!;
 
-        //TODO:+ XML
         /// <summary>
         /// Создаёт новый экземпляр <see cref="BarBuilder"/>.
         /// </summary>
         /// <param name="wrapper">Объект, инкапсулирующий вызовы KOMPAS API.</param>
+        /// //TODO: RSDN
         /// <exception cref="ArgumentNullException">Если <paramref name="wrapper"/> равен null.</exception>
         public BarBuilder(Wrapper wrapper)
         {
             _wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
         }
 
-        //TODO:+ XML
         /// <summary>
         /// Параметры грифа, использованные при последнем построении.
         /// </summary>
@@ -58,22 +55,21 @@ namespace BarbellBarPlugin.Kompas
         /// </summary>
         private void BuildBar()
         {
+            //TODO: RSDN
             double Ls = _parameters.SleeveLength;     // длинна посадочной части
             double Ld = _parameters.SeparatorLength;  // длинна разделителя
             double Lh = _parameters.HandleLength;     // длинна ручки
 
-            //TODO:+ RSDN
             // Диаметр рукояти должен быть меньше, чем диаметр посадки/разделителя.
             double handleDiameter =
                 Math.Min(_parameters.SleeveDiameter, _parameters.SeparatorDiameter) - 3.0;
 
-            //TODO:+ RSDN
             // Запасной вариант: если параметры кривые — берем 80% от разделителя.
+            //TODO: {}
             if (handleDiameter <= 0)
                 handleDiameter = _parameters.SeparatorDiameter * 0.8;
 
-            //TODO:+ WTF
-
+            
             // 1. Левая посадка
             double leftSleeveStart = 0.0;
             double leftSleeveEnd = Ls;

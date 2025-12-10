@@ -6,6 +6,7 @@ using NUnit.Framework;
 
 namespace BarbellBarPlugin.Tests
 {
+
     [TestFixture]
     public class ValidationErrorTests
     {
@@ -25,6 +26,7 @@ namespace BarbellBarPlugin.Tests
         }
     }
 
+    //TODO: XML
     [TestFixture]
     public class BarBuilderTests
     {

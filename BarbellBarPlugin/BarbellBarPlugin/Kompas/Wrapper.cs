@@ -69,11 +69,11 @@ namespace BarbellBarPlugin.Kompas
         /// Создаёт цилиндр вдоль оси X между <paramref name="startX"/> и <paramref name="endX"/>.
         /// Предполагается, что <paramref name="startX"/> ≥ 0 и <paramref name="endX"/> &gt; <paramref name="startX"/>.
         /// </summary>
-        //+TODO: RSDN
         public virtual void CreateCylindricalSegment(double startX, double endX, double diameter, string name)
         {
             if (_part == null)
             {
+                //TODO: RSDN
                 throw new InvalidOperationException("Часть не инициализирована. Вызовите CreateDocument3D().");
             }
 
@@ -100,11 +100,12 @@ namespace BarbellBarPlugin.Kompas
 
             if (string.IsNullOrWhiteSpace(name))
             {
+                //TODO: RSDN
                 throw new ArgumentException("Имя сегмента не может быть пустым.", nameof(name));
             }
 
             // Вычисляем длину и проверяем на минимально допустимое значение.
-            //+TODO: RSDN
+            //TODO: RSDN
             const double MinLength = 0.001;
 
             double length = endX - startX;

@@ -12,11 +12,9 @@ namespace BarbellBarPlugin.Tests
     [TestFixture]
     public class BarParametersTests
     {
-        //+TODO: description
-        /// <summary>
-        /// Конструктор корректно инициализирует все свойства модели.
-        /// </summary>
+        //TODO remove all xml/
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что конструктор BarParameters корректно инициализирует все свойства.")]
         public void Constructor_AssignsProperties()
         {
@@ -46,11 +44,11 @@ namespace BarbellBarPlugin.Tests
             });
         }
 
-        //+TODO: description
         /// <summary>
         /// Свойство TotalLength корректно возвращает суммарную длину грифа.
         /// </summary>
         [Test]
+        //TODO: RSDN
         [Description("Проверяет корректный расчёт свойства TotalLength (суммарной длины грифа).")]
         public void TotalLength_CalculatedCorrectly()
         {
@@ -69,11 +67,11 @@ namespace BarbellBarPlugin.Tests
             Assert.That(total, Is.EqualTo(2000.0).Within(1e-6));
         }
 
-        //+TODO: description
         /// <summary>
         /// Для набора корректных параметров валидатор не возвращает ошибок.
         /// </summary>
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что при корректных параметрах BarParametersValidator не возвращает ошибок.")]
         public void Validator_ValidParameters_ReturnsNoErrors()
         {
@@ -93,12 +91,12 @@ namespace BarbellBarPlugin.Tests
             Assert.That(errors.Count, Is.EqualTo(0));
         }
 
-        //+TODO: duplication
-        //+TODO: description
+        //TODO: duplication
         /// <summary>
         /// При выходе диаметра посадочной части за допустимый диапазон появляется ошибка.
         /// </summary>
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что при недопустимом диаметре посадочной части добавляется ошибка DiametrSleeve.")]
         public void Validator_SleeveDiameterOutOfRange_AddsError()
         {
@@ -113,12 +111,12 @@ namespace BarbellBarPlugin.Tests
             AssertHasError(parameters, "DiametrSleeve");
         }
 
-        //+TODO: duplication
-        //+TODO: description
+        //TODO: duplication
         /// <summary>
         /// При выходе длины разделителя за допустимый диапазон появляется ошибка.
         /// </summary>
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что при недопустимой длине разделителя добавляется ошибка LengthSeparator.")]
         public void Validator_SeparatorLengthOutOfRange_AddsError()
         {
@@ -133,12 +131,12 @@ namespace BarbellBarPlugin.Tests
             AssertHasError(parameters, "LengthSeparator");
         }
 
-        //+TODO: duplication
-        //+TODO: description
+        //TODO: duplication
         /// <summary>
         /// При выходе длины рукояти за допустимый диапазон появляется ошибка.
         /// </summary>
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что при недопустимой длине рукояти добавляется ошибка LengthHandle.")]
         public void Validator_HandleLengthOutOfRange_AddsError()
         {
@@ -153,12 +151,12 @@ namespace BarbellBarPlugin.Tests
             AssertHasError(parameters, "LengthHandle");
         }
 
-        //+TODO: duplication
-        //+TODO: description
+        //TODO: duplication
         /// <summary>
         /// При выходе диаметра разделителя за допустимый диапазон появляется ошибка.
         /// </summary>
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что при недопустимом диаметре разделителя добавляется ошибка DiametrSeparator.")]
         public void Validator_SeparatorDiameterOutOfRange_AddsError()
         {
@@ -173,12 +171,12 @@ namespace BarbellBarPlugin.Tests
             AssertHasError(parameters, "DiametrSeparator");
         }
 
-        //+TODO: duplication
-        //+TODO: description
+        //TODO: duplication
         /// <summary>
         /// При выходе длины посадочной части за допустимый диапазон появляется ошибка.
         /// </summary>
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что при недопустимой длине посадочной части добавляется ошибка LengthSleeve.")]
         public void Validator_SleeveLengthOutOfRange_AddsError()
         {
@@ -193,12 +191,12 @@ namespace BarbellBarPlugin.Tests
             AssertHasError(parameters, "LengthSleeve");
         }
 
-        //+TODO: duplication
-        //+TODO: description
+        //TODO: duplication
         /// <summary>
         /// Если диаметр разделителя не больше диаметра посадочной части — добавляется ошибка.
         /// </summary>
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что при диаметре разделителя не больше диаметра посадки добавляется ошибка DiametrSeparator.")]
         public void Validator_SeparatorNotGreaterThanSleeve_AddsError()
         {
@@ -213,12 +211,12 @@ namespace BarbellBarPlugin.Tests
             AssertHasError(parameters, "DiametrSeparator");
         }
 
-        //+TODO: duplication
-        //+TODO: description
+        //TODO: duplication
         /// <summary>
         /// Если рукоять короче суммы двух разделителей — валидатор добавляет ошибку.
         /// </summary>
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что при рукояти короче суммы двух разделителей добавляется ошибка LengthHandle.")]
         public void Validator_HandleTooShortComparedToSeparators_AddsError()
         {

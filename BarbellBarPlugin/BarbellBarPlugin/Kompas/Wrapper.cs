@@ -154,17 +154,14 @@ namespace BarbellBarPlugin.Kompas
 
             extrude.Create();
 
-            // Можно именовать сущность, если это поддерживается API.
-            // (Если нет свойства Name, просто убери этот блок.)
             try
             {
-                // ReSharper disable once SuspiciousTypeConversion.Global
                 dynamic extrudeDynamic = extrude;
                 extrudeDynamic.Name = name;
             }
             catch
             {
-                // Если API не поддерживает имя — просто игнорируем.
+
             }
         }
     }

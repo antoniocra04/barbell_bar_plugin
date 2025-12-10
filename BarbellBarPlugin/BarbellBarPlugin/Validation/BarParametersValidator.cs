@@ -4,19 +4,28 @@ using BarbellBarPlugin.Model;
 
 namespace BarbellBarPlugin.Validation
 {
-    //TODO: RSDN
+    //+TODO: RSDN
     /// <summary>
     /// Описывает ошибку валидации отдельного параметра грифа.
     /// </summary>
     public class ValidationError
     {
-        /// <summary>Имя поля, привязанного к ошибке (используется для UI).</summary>
+        /// <summary>
+        /// Имя поля, привязанного к ошибке (используется для UI).
+        /// </summary>
         public string FieldName { get; }
 
-        /// <summary>Текст ошибки валидации.</summary>
+        /// <summary>
+        /// Текст ошибки валидации.
+        /// </summary>
         public string Message { get; }
 
-        //TODO: XML
+        //+TODO: XML
+        /// <summary>
+        /// Создаёт новую ошибку валидации параметра.
+        /// </summary>
+        /// <param name="fieldName">Имя поля, с которым связана ошибка.</param>
+        /// <param name="message">Текст сообщения об ошибке.</param>
         public ValidationError(string fieldName, string message)
         {
             FieldName = fieldName;
@@ -29,7 +38,7 @@ namespace BarbellBarPlugin.Validation
     /// </summary>
     public static class BarParametersValidator
     {
-        //TODO: XML
+        //+TODO: XML
         /// <summary>Минимальный и максимальный диаметр посадочной части (мм).</summary>
         private const double SleeveDiameterMin = 25;
         private const double SleeveDiameterMax = 40;
@@ -50,12 +59,14 @@ namespace BarbellBarPlugin.Validation
         private const double SleeveLengthMin = 320;
         private const double SleeveLengthMax = 420;
 
-        //TODO: RSDN
+        //+TODO: RSDN
         /// <summary>
         /// Проверяет параметры грифа и возвращает список ошибок валидации.
         /// </summary>
         /// <param name="p">Объект с параметрами грифа.</param>
-        /// <returns>Список ошибок валидации. Пустой список означает, что все параметры корректны.</returns>
+        /// <returns>
+        /// Список ошибок. Пустой список означает, что все параметры корректны.
+        /// </returns>
         public static IReadOnlyList<ValidationError> Validate(BarParameters p)
         {
             var errors = new List<ValidationError>();
@@ -73,7 +84,7 @@ namespace BarbellBarPlugin.Validation
                 SeparatorLengthMin,
                 SeparatorLengthMax,
                 "LengthSeparator",
-                "Длинна разделителя",
+                "Длина разделителя",
                 errors);
 
             CheckRange(
@@ -81,7 +92,7 @@ namespace BarbellBarPlugin.Validation
                 HandleLengthMin,
                 HandleLengthMax,
                 "LengthHandle",
-                "Длинна ручки",
+                "Длина ручки",
                 errors);
 
             CheckRange(
@@ -97,40 +108,45 @@ namespace BarbellBarPlugin.Validation
                 SleeveLengthMin,
                 SleeveLengthMax,
                 "LengthSleeve",
-                "Длинна посадочной части",
+                "Длина посадочной части",
                 errors);
 
             // Соотношение диаметров разделителя и посадки
             if (p.SeparatorDiameter <= p.SleeveDiameter)
             {
-                errors.Add(new ValidationError(
-                    "DiametrSeparator",
-                    //TODO: RSDN
-                    "Диаметр разделителя должен быть больше диаметра посадочной части."));
+                errors.Add(
+                    new ValidationError(
+                        "DiametrSeparator",
+                        //+TODO: RSDN
+                        "Диаметр разделителя должен быть больше диаметра посадочной части."
+                    )
+                );
             }
 
-            // Соотношение длины ручки и двух разделителей
+            // Соотношение длины ручки и суммарной длины разделителей
             if (p.HandleLength <= 2 * p.SeparatorLength)
             {
-                errors.Add(new ValidationError(
-                    "LengthHandle",
-                    //TODO: RSDN
-                    "Длинна ручки должна быть больше суммарной длины двух разделителей."));
+                errors.Add(
+                    new ValidationError(
+                        "LengthHandle",
+                        //+TODO: RSDN
+                        "Длина ручки должна быть больше суммарной длины двух разделителей."
+                    )
+                );
             }
 
             return errors;
         }
 
         /// <summary>
-        /// Проверяет параметр на попадание в допустимый числовой диапазон.
+        /// Проверяет параметр на попадание в допустимый диапазон.
         /// </summary>
-        /// <param name="value">Проверяемое значение параметра.</param>
-        /// <param name="min">Минимально допустимое значение, включительно.</param>
-        /// <param name="max">Максимально допустимое значение, включительно.</param>
-        /// <param name="fieldName">Имя поля в UI (для привязки ошибки).</param>
-        /// //TODO: RSDN
-        /// <param name="displayName">Название параметра для отображения в сообщении об ошибке.</param>
-        /// <param name="errors">Список ошибок, в который добавляется сообщение в случае нарушения диапазона.</param>
+        /// <param name="value">Значение параметра.</param>
+        /// <param name="min">Минимально допустимое значение (включительно).</param>
+        /// <param name="max">Максимально допустимое значение (включительно).</param>
+        /// <param name="fieldName">Имя поля в UI.</param>
+        /// <param name="displayName">Название параметра для отображения пользователю.</param>
+        /// <param name="errors">Коллекция ошибок, куда добавляется ошибка.</param>
         private static void CheckRange(
             double value,
             double min,
@@ -141,9 +157,12 @@ namespace BarbellBarPlugin.Validation
         {
             if (value < min || value > max)
             {
-                errors.Add(new ValidationError(
-                    fieldName,
-                    $"{displayName} должен быть в диапазоне от {min:0} до {max:0} мм."));
+                errors.Add(
+                    new ValidationError(
+                        fieldName,
+                        $"{displayName} должен быть в диапазоне от {min:0} до {max:0} мм."
+                    )
+                );
             }
         }
     }

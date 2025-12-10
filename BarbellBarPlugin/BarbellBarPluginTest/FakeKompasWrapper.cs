@@ -10,7 +10,7 @@ namespace BarbellBarPlugin.Tests
     /// </summary>
     public class FakeKompasWrapper : Wrapper
     {
-        //TODO: RSDN
+        //+TODO: RSDN
         /// <summary>
         /// Описание построенного цилиндрического сегмента грифа.
         /// </summary>
@@ -47,8 +47,15 @@ namespace BarbellBarPlugin.Tests
             CreateDocCalled = true;
         }
 
-        /// <inheritdoc />
-        /// //TODO: RSDN
+        //+TODO: RSDN
+        /// <summary>
+        /// Логирует параметры создаваемого цилиндрического сегмента,
+        /// добавляя их в коллекцию <see cref="Segments"/> вместо реального построения в KOMPAS.
+        /// </summary>
+        /// <param name="startX">Начальная координата по оси X.</param>
+        /// <param name="endX">Конечная координата по оси X.</param>
+        /// <param name="diameter">Диаметр цилиндрического сегмента.</param>
+        /// <param name="name">Логическое имя сегмента (ручка, посадка и т.п.).</param>
         public override void CreateCylindricalSegment(double startX, double endX, double diameter, string name)
         {
             Segments.Add(new Segment(startX, endX, diameter, name));

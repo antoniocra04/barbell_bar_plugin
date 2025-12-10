@@ -33,7 +33,9 @@ namespace BarbellBarPlugin.Kompas
         public virtual void AttachOrRunCAD()
         {
             if (_kompas != null)
+            {
                 return;
+            }
 
             try
             {
@@ -54,7 +56,9 @@ namespace BarbellBarPlugin.Kompas
         public virtual void CreateDocument3D()
         {
             if (_kompas == null)
-                throw new Exception("Компас не подключён.");
+            {
+                throw new InvalidOperationException("Компас не подключён.");
+            }
 
             _doc3D = (ksDocument3D)_kompas.Document3D();
             _doc3D.Create(false, true);
@@ -65,31 +69,67 @@ namespace BarbellBarPlugin.Kompas
         /// Создаёт цилиндр вдоль оси X между <paramref name="startX"/> и <paramref name="endX"/>.
         /// Предполагается, что <paramref name="startX"/> ≥ 0 и <paramref name="endX"/> &gt; <paramref name="startX"/>.
         /// </summary>
-        //TODO: RSDN
+        //+TODO: RSDN
         public virtual void CreateCylindricalSegment(double startX, double endX, double diameter, string name)
         {
+            if (_part == null)
+            {
+                throw new InvalidOperationException("Часть не инициализирована. Вызовите CreateDocument3D().");
+            }
+
+            if (startX < 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(startX),
+                    "Начальная координата startX не может быть меньше нуля.");
+            }
+
+            if (endX <= startX)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(endX),
+                    "Конечная координата endX должна быть больше startX.");
+            }
+
+            if (diameter <= 0)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(diameter),
+                    "Диаметр цилиндра должен быть положительным.");
+            }
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Имя сегмента не может быть пустым.", nameof(name));
+            }
+
             // Вычисляем длину и проверяем на минимально допустимое значение.
-            //TODO: RSDN
+            //+TODO: RSDN
             const double MinLength = 0.001;
 
             double length = endX - startX;
             if (length <= MinLength)
-                throw new Exception($"Недопустимая длина цилиндра: {length:0.###} мм.");
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(length),
+                    $"Недопустимая длина цилиндра: {length:0.###} мм.");
+            }
 
             // 1. Базовая плоскость YOZ
             ksEntity basePlane = _part.GetDefaultEntity((short)Obj3dType.o3d_planeYOZ);
 
             // 2. Смещённая плоскость на расстояние startX вдоль X
             ksEntity offsetPlane = _part.NewEntity((short)Obj3dType.o3d_planeOffset);
-            var offsetDef = (ksPlaneOffsetDefinition)offsetPlane.GetDefinition();
+            ksPlaneOffsetDefinition offsetDef =
+                (ksPlaneOffsetDefinition)offsetPlane.GetDefinition();
             offsetDef.SetPlane(basePlane);
-            offsetDef.direction = true;     
-            offsetDef.offset = startX;       
+            offsetDef.direction = true;
+            offsetDef.offset = startX;
             offsetPlane.Create();
 
             // 3. Эскиз окружности на смещённой плоскости
             ksEntity sketch = _part.NewEntity((short)Obj3dType.o3d_sketch);
-            var sketchDef = (ksSketchDefinition)sketch.GetDefinition();
+            ksSketchDefinition sketchDef = (ksSketchDefinition)sketch.GetDefinition();
             sketchDef.SetPlane(offsetPlane);
             sketch.Create();
 
@@ -99,7 +139,8 @@ namespace BarbellBarPlugin.Kompas
 
             // 4. Выдавливание вдоль +X на длину сегмента
             ksEntity extrude = _part.NewEntity((short)Obj3dType.o3d_baseExtrusion);
-            var extrudeDef = (ksBaseExtrusionDefinition)extrude.GetDefinition();
+            ksBaseExtrusionDefinition extrudeDef =
+                (ksBaseExtrusionDefinition)extrude.GetDefinition();
 
             extrudeDef.directionType = (short)Direction_Type.dtNormal;
             extrudeDef.SetSketch(sketch);
@@ -112,6 +153,19 @@ namespace BarbellBarPlugin.Kompas
             extrudeDef.SetThinParam(false, 0, 0, 0);
 
             extrude.Create();
+
+            // Можно именовать сущность, если это поддерживается API.
+            // (Если нет свойства Name, просто убери этот блок.)
+            try
+            {
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                dynamic extrudeDynamic = extrude;
+                extrudeDynamic.Name = name;
+            }
+            catch
+            {
+                // Если API не поддерживает имя — просто игнорируем.
+            }
         }
     }
 }

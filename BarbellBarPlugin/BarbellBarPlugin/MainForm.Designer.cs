@@ -47,7 +47,13 @@
             label1 = new Label();
             button1 = new Button();
             toolTip1 = new ToolTip(components);
+            groupBox2 = new GroupBox();
+            femalePresetButton = new Button();
+            malePresetButton = new Button();
+            saveButton = new Button();
+            loadButton = new Button();
             groupBox1.SuspendLayout();
+            groupBox2.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox1
@@ -202,7 +208,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(279, 334);
+            button1.Location = new Point(279, 396);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 1;
@@ -210,20 +216,75 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(femalePresetButton);
+            groupBox2.Controls.Add(malePresetButton);
+            groupBox2.Location = new Point(12, 331);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(342, 56);
+            groupBox2.TabIndex = 2;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Пресеты";
+            // 
+            // femalePresetButton
+            // 
+            femalePresetButton.Location = new Point(136, 22);
+            femalePresetButton.Name = "femalePresetButton";
+            femalePresetButton.Size = new Size(122, 23);
+            femalePresetButton.TabIndex = 1;
+            femalePresetButton.Text = "Женский гриф";
+            femalePresetButton.UseVisualStyleBackColor = true;
+            femalePresetButton.Click += FemalePresetButton_Click;
+            // 
+            // malePresetButton
+            // 
+            malePresetButton.Location = new Point(6, 22);
+            malePresetButton.Name = "malePresetButton";
+            malePresetButton.Size = new Size(124, 23);
+            malePresetButton.TabIndex = 0;
+            malePresetButton.Text = "Мужской гриф";
+            malePresetButton.UseVisualStyleBackColor = true;
+            malePresetButton.Click += MalePresetButton_Click;
+            // 
+            // saveButton
+            // 
+            saveButton.Location = new Point(12, 396);
+            saveButton.Name = "saveButton";
+            saveButton.Size = new Size(75, 23);
+            saveButton.TabIndex = 3;
+            saveButton.Text = "Сохранить";
+            saveButton.UseVisualStyleBackColor = true;
+            saveButton.Click += SaveParamsButton_Click;
+            // 
+            // loadButton
+            // 
+            loadButton.Location = new Point(96, 396);
+            loadButton.Name = "loadButton";
+            loadButton.Size = new Size(75, 23);
+            loadButton.TabIndex = 4;
+            loadButton.Text = "Загрузить";
+            loadButton.UseVisualStyleBackColor = true;
+            loadButton.Click += LoadParamsButton_Click;
+            // 
             // BarbelBarPlugin
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(366, 363);
+            ClientSize = new Size(366, 428);
+            Controls.Add(loadButton);
+            Controls.Add(saveButton);
+            Controls.Add(groupBox2);
             Controls.Add(button1);
             Controls.Add(groupBox1);
-            MaximumSize = new Size(382, 402);
-            MinimumSize = new Size(382, 402);
+            MaximumSize = new Size(382, 467);
+            MinimumSize = new Size(382, 467);
             Name = "BarbelBarPlugin";
             Text = "BarbellBarPlugin";
             Load += BarbelBarPlugin_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            groupBox2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -247,5 +308,10 @@
         private Label label7;
         private TextBox LengthSeparatorTextBox;
         private ToolTip toolTip1;
+        private GroupBox groupBox2;
+        private Button femalePresetButton;
+        private Button malePresetButton;
+        private Button saveButton;
+        private Button loadButton;
     }
 }

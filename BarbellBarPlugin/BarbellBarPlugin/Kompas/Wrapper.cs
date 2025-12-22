@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using Kompas6API5;
 using Kompas6Constants;
 using Kompas6Constants3D;
@@ -53,6 +55,7 @@ namespace BarbellBarPlugin.Kompas
         /// <summary>
         /// Создаёт новый 3D-документ и получает ссылку на верхний Part.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Если KOMPAS не подключён.</exception>
         public virtual void CreateDocument3D()
         {
             if (_kompas == null)
@@ -66,14 +69,46 @@ namespace BarbellBarPlugin.Kompas
         }
 
         /// <summary>
+        /// Закрывает активный 3D-документ.
+        /// После закрытия освобождает COM-объекты документа и детали (Part).
+        /// </summary>
+        /// <param name="save">True — сохранить документ перед закрытием; False — закрыть без сохранения.</param>
+        public virtual void CloseActiveDocument3D(bool save = false)
+        {
+            if (_doc3D == null)
+            {
+                return;
+            }
+
+            try
+            {
+                InvokeClose(_doc3D, save);
+            }
+            finally
+            {
+                ReleaseComObject(_part);
+                _part = null;
+
+                ReleaseComObject(_doc3D);
+                _doc3D = null;
+            }
+        }
+
+        /// <summary>
         /// Создаёт цилиндр вдоль оси X между <paramref name="startX"/> и <paramref name="endX"/>.
         /// Предполагается, что <paramref name="startX"/> ≥ 0 и <paramref name="endX"/> &gt; <paramref name="startX"/>.
         /// </summary>
+        /// <param name="startX">Начальная координата сегмента по оси X.</param>
+        /// <param name="endX">Конечная координата сегмента по оси X.</param>
+        /// <param name="diameter">Диаметр сегмента.</param>
+        /// <param name="name">Имя (метка) сегмента в дереве построения.</param>
+        /// <exception cref="InvalidOperationException">Если 3D-документ/деталь не инициализированы.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Если координаты или диаметр некорректны.</exception>
+        /// <exception cref="ArgumentException">Если имя сегмента пустое.</exception>
         public virtual void CreateCylindricalSegment(double startX, double endX, double diameter, string name)
         {
             if (_part == null)
             {
-                //TODO: RSDN
                 throw new InvalidOperationException("Часть не инициализирована. Вызовите CreateDocument3D().");
             }
 
@@ -100,12 +135,9 @@ namespace BarbellBarPlugin.Kompas
 
             if (string.IsNullOrWhiteSpace(name))
             {
-                //TODO: RSDN
                 throw new ArgumentException("Имя сегмента не может быть пустым.", nameof(name));
             }
 
-            // Вычисляем длину и проверяем на минимально допустимое значение.
-            //TODO: RSDN
             const double MinLength = 0.001;
 
             double length = endX - startX;
@@ -116,10 +148,8 @@ namespace BarbellBarPlugin.Kompas
                     $"Недопустимая длина цилиндра: {length:0.###} мм.");
             }
 
-            // 1. Базовая плоскость YOZ
             ksEntity basePlane = _part.GetDefaultEntity((short)Obj3dType.o3d_planeYOZ);
 
-            // 2. Смещённая плоскость на расстояние startX вдоль X
             ksEntity offsetPlane = _part.NewEntity((short)Obj3dType.o3d_planeOffset);
             ksPlaneOffsetDefinition offsetDef =
                 (ksPlaneOffsetDefinition)offsetPlane.GetDefinition();
@@ -128,7 +158,6 @@ namespace BarbellBarPlugin.Kompas
             offsetDef.offset = startX;
             offsetPlane.Create();
 
-            // 3. Эскиз окружности на смещённой плоскости
             ksEntity sketch = _part.NewEntity((short)Obj3dType.o3d_sketch);
             ksSketchDefinition sketchDef = (ksSketchDefinition)sketch.GetDefinition();
             sketchDef.SetPlane(offsetPlane);
@@ -138,7 +167,6 @@ namespace BarbellBarPlugin.Kompas
             doc2D.ksCircle(0, 0, diameter / 2.0, 1);
             sketchDef.EndEdit();
 
-            // 4. Выдавливание вдоль +X на длину сегмента
             ksEntity extrude = _part.NewEntity((short)Obj3dType.o3d_baseExtrusion);
             ksBaseExtrusionDefinition extrudeDef =
                 (ksBaseExtrusionDefinition)extrude.GetDefinition();
@@ -162,7 +190,83 @@ namespace BarbellBarPlugin.Kompas
             }
             catch
             {
+            }
+        }
 
+        /// <summary>
+        /// Вызывает закрытие документа через reflection/dynamic, чтобы не зависеть от точной сигнатуры метода Close в API.
+        /// </summary>
+        /// <param name="doc">3D-документ KOMPAS.</param>
+        /// <param name="save">Признак сохранения.</param>
+        private static void InvokeClose(object doc, bool save)
+        {
+            Type t = doc.GetType();
+
+            MethodInfo closeBool = t.GetMethod("Close", new[] { typeof(bool) });
+            if (closeBool != null)
+            {
+                closeBool.Invoke(doc, new object[] { save });
+                return;
+            }
+
+            MethodInfo closeInt = t.GetMethod("Close", new[] { typeof(int) });
+            if (closeInt != null)
+            {
+                closeInt.Invoke(doc, new object[] { save ? 1 : 0 });
+                return;
+            }
+
+            MethodInfo closeShort = t.GetMethod("Close", new[] { typeof(short) });
+            if (closeShort != null)
+            {
+                closeShort.Invoke(doc, new object[] { (short)(save ? 1 : 0) });
+                return;
+            }
+
+            MethodInfo closeNoArgs = t.GetMethod("Close", Type.EmptyTypes);
+            if (closeNoArgs != null)
+            {
+                closeNoArgs.Invoke(doc, null);
+                return;
+            }
+
+            dynamic d = doc;
+            try
+            {
+                d.Close(save);
+            }
+            catch
+            {
+                try
+                {
+                    d.Close();
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        /// <summary>
+        /// Освобождает COM-объект (FinalReleaseComObject).
+        /// </summary>
+        /// <param name="obj">COM-объект.</param>
+        private static void ReleaseComObject(object obj)
+        {
+            if (obj == null)
+            {
+                return;
+            }
+
+            if (Marshal.IsComObject(obj))
+            {
+                try
+                {
+                    Marshal.FinalReleaseComObject(obj);
+                }
+                catch
+                {
+                }
             }
         }
     }

@@ -5,14 +5,19 @@ namespace BarbellBarPlugin.Kompas
 {
     /// <summary>
     /// Оркестратор построения 3D-модели грифа в KOMPAS 3D.
-    /// Разбивает гриф на пять цилиндрических сегментов по оси X и отдаёт их обёртке KOMPAS.
+    /// Разбивает гриф на пять цилиндрических сегментов по оси X и передаёт их обёртке KOMPAS.
     /// </summary>
     public class BarBuilder
     {
         /// <summary>
-        /// Обёртка над KOMPAS API, выполняющая построение сегментов.
+        /// Обёртка над KOMPAS API, выполняющая построение сегментов и операции с документом.
         /// </summary>
         private readonly Wrapper _wrapper;
+
+        /// <summary>
+        /// Признак того, что подключение к КОМПАС уже выполнено.
+        /// </summary>
+        private bool _isCadAttached;
 
         /// <summary>
         /// Параметры грифа, использованные при последнем построении.
@@ -23,8 +28,8 @@ namespace BarbellBarPlugin.Kompas
         /// Создаёт новый экземпляр <see cref="BarBuilder"/>.
         /// </summary>
         /// <param name="wrapper">Объект, инкапсулирующий вызовы KOMPAS API.</param>
-        /// //TODO: RSDN
         /// <exception cref="ArgumentNullException">Если <paramref name="wrapper"/> равен null.</exception>
+        //TODO: RSDN
         public BarBuilder(Wrapper wrapper)
         {
             _wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
@@ -36,64 +41,70 @@ namespace BarbellBarPlugin.Kompas
         public BarParameters CurrentParameters => _parameters;
 
         /// <summary>
-        /// Главный сценарий построения.
-        /// Подключает KOMPAS, создаёт документ и строит все сегменты грифа.
+        /// Выполняет построение 3D-модели грифа.
+        /// По умолчанию документ остаётся открытым (режим работы с пользователем).
+        /// Для нагрузочного тестирования можно включить закрытие документа после построения.
         /// </summary>
-        public void Build(BarParameters parameters)
+        /// <param name="parameters">Параметры грифа.</param>
+        /// <param name="closeDocumentAfterBuild">True — закрыть документ после построения; False — оставить документ открытым.</param>
+        /// <exception cref="ArgumentNullException">Если <paramref name="parameters"/> равен null.</exception>
+        public void Build(BarParameters parameters, bool closeDocumentAfterBuild = false)
         {
             _parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
 
-            _wrapper.AttachOrRunCAD();
+            if (!_isCadAttached)
+            {
+                _wrapper.AttachOrRunCAD();
+                _isCadAttached = true;
+            }
+
             _wrapper.CreateDocument3D();
 
-            BuildBar();
+            try
+            {
+                BuildBar();
+            }
+            finally
+            {
+                if (closeDocumentAfterBuild)
+                {
+                    _wrapper.CloseActiveDocument3D(save: false);
+                }
+            }
         }
 
         /// <summary>
-        /// Строит гриф вдоль оси X без использования промежуточной переменной x.
-        /// Все координаты считаются явно от нуля.
+        /// Строит гриф вдоль оси X.
+        /// Все координаты сегментов рассчитываются от нуля.
         /// </summary>
         private void BuildBar()
         {
             //TODO: RSDN
-            double Ls = _parameters.SleeveLength;     // длинна посадочной части
-            double Ld = _parameters.SeparatorLength;  // длинна разделителя
-            double Lh = _parameters.HandleLength;     // длинна ручки
+            double Ls = _parameters.SleeveLength;
+            double Ld = _parameters.SeparatorLength;
+            double Lh = _parameters.HandleLength;
 
-            // Диаметр рукояти должен быть меньше, чем диаметр посадки/разделителя.
             double handleDiameter =
                 Math.Min(_parameters.SleeveDiameter, _parameters.SeparatorDiameter) - 3.0;
 
-            // Запасной вариант: если параметры кривые — берем 80% от разделителя.
             //TODO: {}
             if (handleDiameter <= 0)
                 handleDiameter = _parameters.SeparatorDiameter * 0.8;
 
-            
-            // 1. Левая посадка
             double leftSleeveStart = 0.0;
             double leftSleeveEnd = Ls;
 
-            // 2. Левый разделитель
             double leftSepStart = leftSleeveEnd;
             double leftSepEnd = leftSepStart + Ld;
 
-            // 3. Рукоять
             double handleStart = leftSepEnd;
             double handleEnd = handleStart + Lh;
 
-            // 4. Правый разделитель
             double rightSepStart = handleEnd;
             double rightSepEnd = rightSepStart + Ld;
 
-            // 5. Правая посадка
             double rightSleeveStart = rightSepEnd;
             double rightSleeveEnd = rightSleeveStart + Ls;
-
-
-            //
-            // Построение сегментов в KOMPAS
-            //
 
             _wrapper.CreateCylindricalSegment(
                 leftSleeveStart,

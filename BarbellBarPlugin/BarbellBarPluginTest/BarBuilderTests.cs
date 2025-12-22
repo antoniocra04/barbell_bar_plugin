@@ -6,11 +6,12 @@ using NUnit.Framework;
 
 namespace BarbellBarPlugin.Tests
 {
-
     [TestFixture]
     public class ValidationErrorTests
     {
         [Test]
+        [Description("Проверяет, что конструктор ValidationError " +
+                    "корректно сохраняет имя поля и текст сообщения.")]
         public void Ctor_Sets_FieldName_And_Message()
         {
             const string fieldName = "LengthSleeve";
@@ -26,17 +27,20 @@ namespace BarbellBarPlugin.Tests
         }
     }
 
-    //TODO: XML
     [TestFixture]
     public class BarBuilderTests
     {
         [Test]
+        [Description("Проверяет, что конструктор BarBuilder выбрасывает " +
+                    "ArgumentNullException, если IKompasWrapper равен null.")]
         public void Ctor_Throws_WhenWrapperIsNull()
         {
             Assert.Throws<ArgumentNullException>(() => new BarBuilder(null!));
         }
 
         [Test]
+        [Description("Проверяет, что метод Build выбрасывает " +
+                    "ArgumentNullException, если параметры грифа равны null.")]
         public void Build_Throws_WhenParametersIsNull()
         {
             var fake = new FakeKompasWrapper();
@@ -46,6 +50,8 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
+        [Description("Проверяет, что метод Build сохраняет ссылку на " +
+                    "текущие параметры в свойство CurrentParameters.")]
         public void Build_SetsCurrentParameters()
         {
             var fake = new FakeKompasWrapper();
@@ -64,6 +70,8 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
+        [Description("Проверяет, что метод Build вызывает " +
+                    "подключение к КОМПАС и создание нового документа.")]
         public void Build_CallsAttachAndCreateDocument()
         {
             var fake = new FakeKompasWrapper();
@@ -86,6 +94,9 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
+        [Description("Проверяет, что метод Build создаёт 5 сегментов и " +
+                    "добавляет их в правильном порядке: LeftSleeve, LeftSeparator," +
+                    " Handle, RightSeparator, RightSleeve.")]
         public void Build_CreatesFiveSegments_InCorrectOrder()
         {
             var fake = new FakeKompasWrapper();
@@ -115,6 +126,8 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
+        [Description("Проверяет, что сегменты, создаваемые в Build, " +
+                    "имеют корректные координаты по оси X и диаметры (включая диаметр рукояти).")]
         public void Build_SegmentsHaveCorrectCoordinatesAndDiameters()
         {
             var fake = new FakeKompasWrapper();
@@ -164,6 +177,9 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
+        [Description("Проверяет, что если вычисленный диаметр " +
+                    "рукояти получается неположительным, используется " +
+                    "запасной диаметр (SeparatorDiameter * 0.8).")]
         public void Build_UsesFallbackHandleDiameter_WhenComputedDiameterIsNonPositive()
         {
             var fake = new FakeKompasWrapper();

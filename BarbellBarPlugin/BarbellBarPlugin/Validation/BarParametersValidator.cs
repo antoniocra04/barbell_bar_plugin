@@ -4,7 +4,7 @@ using BarbellBarPlugin.Model;
 
 namespace BarbellBarPlugin.Validation
 {
-    //+TODO: RSDN
+    //TODO: RSDN
     /// <summary>
     /// Описывает ошибку валидации отдельного параметра грифа.
     /// </summary>
@@ -20,7 +20,6 @@ namespace BarbellBarPlugin.Validation
         /// </summary>
         public string Message { get; }
 
-        //+TODO: XML
         /// <summary>
         /// Создаёт новую ошибку валидации параметра.
         /// </summary>
@@ -33,12 +32,13 @@ namespace BarbellBarPlugin.Validation
         }
     }
 
+    //TODO: RSDN
     /// <summary>
     /// Выполняет проверку параметров грифа на соответствие допустимым диапазонам.
     /// </summary>
     public static class BarParametersValidator
     {
-        //+TODO: XML
+        //TODO: RSDN
         /// <summary>Минимальный и максимальный диаметр посадочной части (мм).</summary>
         private const double SleeveDiameterMin = 25;
         private const double SleeveDiameterMax = 40;
@@ -117,7 +117,7 @@ namespace BarbellBarPlugin.Validation
                 errors.Add(
                     new ValidationError(
                         "DiametrSeparator",
-                        //+TODO: RSDN
+                        //TODO: RSDN
                         "Диаметр разделителя должен быть больше диаметра посадочной части."
                     )
                 );
@@ -129,7 +129,7 @@ namespace BarbellBarPlugin.Validation
                 errors.Add(
                     new ValidationError(
                         "LengthHandle",
-                        //+TODO: RSDN
+                        //TODO: RSDN
                         "Длина ручки должна быть больше суммарной длины двух разделителей."
                     )
                 );
@@ -160,6 +160,7 @@ namespace BarbellBarPlugin.Validation
                 errors.Add(
                     new ValidationError(
                         fieldName,
+                        //TODO: RSDN
                         $"{displayName} должен быть в диапазоне от {min:0} до {max:0} мм."
                     )
                 );

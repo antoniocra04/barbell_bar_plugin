@@ -24,9 +24,8 @@ namespace BarbellBarPlugin.Tests
                 Assert.That(error.Message, Is.EqualTo(message));
             });
         }
-        //TODO + remove all xml/
         [Test]
-        //TODO + RSDN
+        //TODO: RSDN
         [Description("Проверяет, что конструктор BarParameters корректно инициализирует все свойства.")]
         public void Constructor_AssignsProperties()
         {
@@ -54,7 +53,7 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
-        //TODO + RSDN
+        //TODO: RSDN
         [Description("Проверяет корректный расчёт свойства TotalLength (суммарной длины грифа).")]
         public void TotalLength_CalculatedCorrectly()
         {
@@ -71,8 +70,8 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
-        //TODO + RSDN
-        [Description("Проверяет, что при корректных параметрах BarParametersValidator не возвращает ошибок.")]
+        [Description(
+            //TODO: RSDN"Проверяет, что при корректных параметрах BarParametersValidator не возвращает ошибок.")]
         public void Validator_ValidParameters_ReturnsNoErrors()
         {
             var parameters = CreateParameters(
@@ -88,7 +87,6 @@ namespace BarbellBarPlugin.Tests
             Assert.That(errors, Is.Empty);
         }
 
-        //TODO + duplication
         [TestCase(10, 50, 1250, 40, 350, "DiametrSleeve",
             TestName = "Validator_SleeveDiameterOutOfRange_AddsError(DiametrSleeve)")]
         [TestCase(30, 10, 1250, 40, 350, "LengthSeparator",
@@ -103,7 +101,6 @@ namespace BarbellBarPlugin.Tests
             TestName = "Validator_SeparatorNotGreaterThanSleeve_AddsError(DiametrSeparator)")]
         [TestCase(30, 50, 80, 40, 350, "LengthHandle",
             TestName = "Validator_HandleTooShortComparedToSeparators_AddsError(LengthHandle)")]
-        //TODO + RSDN
         [Description("Проверяет, что при некорректных значениях " +
                     "параметров валидатор добавляет ошибку для ожидаемого поля.")]
         public void Validator_InvalidParameters_AddsExpectedError(
@@ -127,6 +124,7 @@ namespace BarbellBarPlugin.Tests
                 errors.Any(e => e.FieldName == expectedFieldName),
                 Is.True,
                 $"Ожидалась ошибка для поля '{expectedFieldName}'. " +
+                //TODO: RSDN
                 $"Фактические ошибки: {string.Join(", ", errors.Select(e => e.FieldName))}");
         }
         private static BarParameters CreateParameters(

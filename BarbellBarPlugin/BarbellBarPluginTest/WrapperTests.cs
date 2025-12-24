@@ -9,6 +9,7 @@ namespace BarbellBarPlugin.Tests
     public class WrapperTests
     {
         [Test]
+        //TODO: RSDN
         [Description("CloseActiveDocument3D: если активного документа нет (_doc3D == null), метод просто возвращается.")]
         public void CloseActiveDocument3D_DoesNothing_WhenDocIsNull()
         {
@@ -20,6 +21,7 @@ namespace BarbellBarPlugin.Tests
         [Description("AttachOrRunCAD: если _kompas уже установлен (не null), метод возвращается без попытки создать COM.")]
         public void AttachOrRunCAD_Returns_WhenKompasAlreadySet()
         {
+            //TODO: RSDN
             var w = new Wrapper();
 
             // подсовываем любое ненулевое значение в приватное поле _kompas

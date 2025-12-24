@@ -9,6 +9,7 @@ namespace BarbellBarPlugin.Tests
     public class BarBuilderTests
     {
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что конструктор BarBuilder выбрасывает ArgumentNullException, если Wrapper равен null.")]
         public void Ctor_Throws_WhenWrapperIsNull()
         {
@@ -114,6 +115,7 @@ namespace BarbellBarPlugin.Tests
 
             Assert.Multiple(() =>
             {
+                //TODO: within to const
                 Assert.That(s[0].StartX, Is.EqualTo(0.0).Within(1e-6));
                 Assert.That(s[0].EndX, Is.EqualTo(350.0).Within(1e-6));
 
@@ -135,6 +137,7 @@ namespace BarbellBarPlugin.Tests
 
             Assert.Multiple(() =>
             {
+                //TODO: RSDN
                 Assert.That(s[0].Diameter, Is.EqualTo(parameters.SleeveDiameter).Within(1e-6));
                 Assert.That(s[1].Diameter, Is.EqualTo(parameters.SeparatorDiameter).Within(1e-6));
                 Assert.That(s[2].Diameter, Is.EqualTo(expectedHandleDiameter).Within(1e-6));

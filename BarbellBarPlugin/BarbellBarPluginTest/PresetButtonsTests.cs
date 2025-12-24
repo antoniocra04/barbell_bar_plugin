@@ -10,6 +10,7 @@ namespace BarbellBarPlugin.Tests
     public class BarbelBarPlugin_PresetButtonsTests
     {
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что нажатие кнопки мужского пресета заполняет поля ожидаемыми значениями.")]
         public void MalePresetButton_Click_FillsTextBoxes_WithMalePresetValues()
         {
@@ -34,6 +35,7 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
+        //TODO: RSDN
         [Description("Проверяет, что нажатие кнопки женского пресета заполняет поля ожидаемыми значениями.")]
         public void FemalePresetButton_Click_FillsTextBoxes_WithFemalePresetValues()
         {

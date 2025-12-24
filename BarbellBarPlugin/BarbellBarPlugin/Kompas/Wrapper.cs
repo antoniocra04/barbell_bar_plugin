@@ -74,6 +74,7 @@ namespace BarbellBarPlugin.Kompas
         /// Закрывает активный 3D-документ.
         /// После закрытия освобождает COM-объекты документа и детали (Part).
         /// </summary>
+        /// //TODO: RSDN
         /// <param name="save">True — сохранить документ перед закрытием; False — закрыть без сохранения.</param>
         public virtual void CloseActiveDocument3D(bool save = false)
         {
@@ -96,6 +97,7 @@ namespace BarbellBarPlugin.Kompas
             }
         }
 
+        //TODO: RSDN
         /// <summary>
         /// Создаёт цилиндр вдоль оси X между <paramref name="startX"/> и <paramref name="endX"/>.
         /// Предполагается, что <paramref name="startX"/> ≥ 0 и <paramref name="endX"/> &gt; <paramref name="startX"/>.
@@ -111,6 +113,7 @@ namespace BarbellBarPlugin.Kompas
         {
             if (_part == null)
             {
+                //TODO: RSDN
                 throw new InvalidOperationException("Часть не инициализирована. Вызовите CreateDocument3D().");
             }
 
@@ -137,6 +140,7 @@ namespace BarbellBarPlugin.Kompas
 
             if (string.IsNullOrWhiteSpace(name))
             {
+                //TODO: RSDN
                 throw new ArgumentException("Имя сегмента не может быть пустым.", nameof(name));
             }
 
@@ -192,10 +196,12 @@ namespace BarbellBarPlugin.Kompas
             }
             catch
             {
+                //TODO: ??
             }
         }
 
         /// <summary>
+        /// //TODO: RSDN
         /// Вызывает закрытие документа через reflection/dynamic, чтобы не зависеть от точной сигнатуры метода Close в API.
         /// </summary>
         /// <param name="doc">3D-документ KOMPAS.</param>
@@ -268,6 +274,7 @@ namespace BarbellBarPlugin.Kompas
                 }
                 catch
                 {
+                    //TODO: RSDN
                 }
             }
         }

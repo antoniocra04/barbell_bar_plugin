@@ -14,7 +14,7 @@ using BarbellBarPlugin.Validation;
 
 namespace BarbellBarPlugin
 {
-    //TODO: XML +
+    //TODO: XML
     [ExcludeFromCodeCoverage]
     public partial class BarbelBarPlugin : Form
     {

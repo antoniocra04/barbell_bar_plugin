@@ -28,8 +28,8 @@ namespace BarbellBarPlugin.Kompas
         /// Создаёт новый экземпляр <see cref="BarBuilder"/>.
         /// </summary>
         /// <param name="wrapper">Объект, инкапсулирующий вызовы KOMPAS API.</param>
+        /// //TODO: RSDN
         /// <exception cref="ArgumentNullException">Если <paramref name="wrapper"/> равен null.</exception>
-        //TODO: RSDN
         public BarBuilder(Wrapper wrapper)
         {
             _wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
@@ -46,6 +46,7 @@ namespace BarbellBarPlugin.Kompas
         /// Для нагрузочного тестирования можно включить закрытие документа после построения.
         /// </summary>
         /// <param name="parameters">Параметры грифа.</param>
+        /// //TODO: RSDN
         /// <param name="closeDocumentAfterBuild">True — закрыть документ после построения; False — оставить документ открытым.</param>
         /// <exception cref="ArgumentNullException">Если <paramref name="parameters"/> равен null.</exception>
         public void Build(BarParameters parameters, bool closeDocumentAfterBuild = false)

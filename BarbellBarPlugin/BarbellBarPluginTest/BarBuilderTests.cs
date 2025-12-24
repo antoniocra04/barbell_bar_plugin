@@ -1,46 +1,22 @@
 ﻿using System;
 using BarbellBarPlugin.Kompas;
 using BarbellBarPlugin.Model;
-using BarbellBarPlugin.Validation;
 using NUnit.Framework;
 
 namespace BarbellBarPlugin.Tests
 {
     [TestFixture]
-    public class ValidationErrorTests
-    {
-        [Test]
-        [Description("Проверяет, что конструктор ValidationError " +
-                    "корректно сохраняет имя поля и текст сообщения.")]
-        public void Ctor_Sets_FieldName_And_Message()
-        {
-            const string fieldName = "LengthSleeve";
-            const string message = "Ошибка";
-
-            var error = new ValidationError(fieldName, message);
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(error.FieldName, Is.EqualTo(fieldName));
-                Assert.That(error.Message, Is.EqualTo(message));
-            });
-        }
-    }
-
-    [TestFixture]
     public class BarBuilderTests
     {
         [Test]
-        [Description("Проверяет, что конструктор BarBuilder выбрасывает " +
-                    "ArgumentNullException, если IKompasWrapper равен null.")]
+        [Description("Проверяет, что конструктор BarBuilder выбрасывает ArgumentNullException, если Wrapper равен null.")]
         public void Ctor_Throws_WhenWrapperIsNull()
         {
             Assert.Throws<ArgumentNullException>(() => new BarBuilder(null!));
         }
 
         [Test]
-        [Description("Проверяет, что метод Build выбрасывает " +
-                    "ArgumentNullException, если параметры грифа равны null.")]
+        [Description("Проверяет, что метод Build выбрасывает ArgumentNullException, если параметры грифа равны null.")]
         public void Build_Throws_WhenParametersIsNull()
         {
             var fake = new FakeKompasWrapper();
@@ -50,19 +26,13 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет, что метод Build сохраняет ссылку на " +
-                    "текущие параметры в свойство CurrentParameters.")]
+        [Description("Проверяет, что метод Build сохраняет ссылку на текущие параметры в свойство CurrentParameters.")]
         public void Build_SetsCurrentParameters()
         {
             var fake = new FakeKompasWrapper();
             var builder = new BarBuilder(fake);
 
-            var parameters = new BarParameters(
-                sleeveDiameter: 30,
-                separatorLength: 50,
-                handleLength: 1200,
-                separatorDiameter: 40,
-                sleeveLength: 350);
+            var parameters = new BarParameters(30, 50, 1200, 40, 350);
 
             builder.Build(parameters);
 
@@ -70,19 +40,13 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет, что метод Build вызывает " +
-                    "подключение к КОМПАС и создание нового документа.")]
+        [Description("Проверяет, что метод Build вызывает подключение к КОМПАС (AttachOrRunCAD) и создание нового документа (CreateDocument3D).")]
         public void Build_CallsAttachAndCreateDocument()
         {
             var fake = new FakeKompasWrapper();
             var builder = new BarBuilder(fake);
 
-            var parameters = new BarParameters(
-                sleeveDiameter: 30,
-                separatorLength: 50,
-                handleLength: 1200,
-                separatorDiameter: 40,
-                sleeveLength: 350);
+            var parameters = new BarParameters(30, 50, 1200, 40, 350);
 
             builder.Build(parameters);
 
@@ -94,20 +58,29 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет, что метод Build создаёт 5 сегментов и " +
-                    "добавляет их в правильном порядке: LeftSleeve, LeftSeparator," +
-                    " Handle, RightSeparator, RightSleeve.")]
+        [Description("Проверяет, что AttachOrRunCAD вызывается только один раз при двух вызовах Build.")]
+        public void Build_AttachesOnlyOnce_WhenCalledTwice()
+        {
+            var fake = new FakeKompasWrapper();
+            var builder = new BarBuilder(fake);
+
+            var p = new BarParameters(30, 50, 1200, 40, 350);
+
+            builder.Build(p);
+            builder.Build(p);
+
+            Assert.That(fake.AttachCallCount, Is.EqualTo(1),
+                "AttachOrRunCAD должен вызываться только один раз.");
+        }
+
+        [Test]
+        [Description("Проверяет, что метод Build создаёт 5 сегментов в порядке: LeftSleeve, LeftSeparator, Handle, RightSeparator, RightSleeve.")]
         public void Build_CreatesFiveSegments_InCorrectOrder()
         {
             var fake = new FakeKompasWrapper();
             var builder = new BarBuilder(fake);
 
-            var parameters = new BarParameters(
-                sleeveDiameter: 30,
-                separatorLength: 50,
-                handleLength: 1200,
-                separatorDiameter: 40,
-                sleeveLength: 350);
+            var parameters = new BarParameters(30, 50, 1200, 40, 350);
 
             builder.Build(parameters);
 
@@ -126,19 +99,13 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет, что сегменты, создаваемые в Build, " +
-                    "имеют корректные координаты по оси X и диаметры (включая диаметр рукояти).")]
+        [Description("Проверяет координаты X и диаметры сегментов (включая диаметр рукояти) на базовом наборе параметров.")]
         public void Build_SegmentsHaveCorrectCoordinatesAndDiameters()
         {
             var fake = new FakeKompasWrapper();
             var builder = new BarBuilder(fake);
 
-            var parameters = new BarParameters(
-                sleeveDiameter: 30,
-                separatorLength: 50,
-                handleLength: 1200,
-                separatorDiameter: 40,
-                sleeveLength: 350);
+            var parameters = new BarParameters(30, 50, 1200, 40, 350);
 
             builder.Build(parameters);
 
@@ -177,9 +144,7 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет, что если вычисленный диаметр " +
-                    "рукояти получается неположительным, используется " +
-                    "запасной диаметр (SeparatorDiameter * 0.8).")]
+        [Description("Проверяет, что если вычисленный диаметр рукояти <= 0, используется запасной диаметр (SeparatorDiameter * 0.8).")]
         public void Build_UsesFallbackHandleDiameter_WhenComputedDiameterIsNonPositive()
         {
             var fake = new FakeKompasWrapper();
@@ -195,10 +160,41 @@ namespace BarbellBarPlugin.Tests
             builder.Build(parameters);
 
             var handle = fake.Segments[2];
-
             double expected = parameters.SeparatorDiameter * 0.8;
 
             Assert.That(handle.Diameter, Is.EqualTo(expected).Within(1e-6));
+        }
+
+        [Test]
+        [Description("Проверяет непокрытый finally: при closeDocumentAfterBuild=true вызывается CloseActiveDocument3D(save:false).")]
+        public void Build_ClosesDocumentInFinally_WhenCloseDocumentAfterBuildTrue()
+        {
+            var fake = new FakeKompasWrapper();
+            var builder = new BarBuilder(fake);
+
+            var parameters = new BarParameters(30, 50, 1200, 40, 350);
+
+            builder.Build(parameters, closeDocumentAfterBuild: true);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(fake.CloseDocCalled, Is.True);
+                Assert.That(fake.CloseDocSaveArg, Is.False);
+            });
+        }
+
+        [Test]
+        [Description("Проверяет finally: при closeDocumentAfterBuild=false CloseActiveDocument3D не вызывается.")]
+        public void Build_DoesNotCloseDocument_WhenCloseDocumentAfterBuildFalse()
+        {
+            var fake = new FakeKompasWrapper();
+            var builder = new BarBuilder(fake);
+
+            var parameters = new BarParameters(30, 50, 1200, 40, 350);
+
+            builder.Build(parameters, closeDocumentAfterBuild: false);
+
+            Assert.That(fake.CloseDocCalled, Is.False);
         }
     }
 }

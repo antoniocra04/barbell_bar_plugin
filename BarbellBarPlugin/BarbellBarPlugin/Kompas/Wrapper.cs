@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Kompas6API5;
@@ -11,6 +12,7 @@ namespace BarbellBarPlugin.Kompas
     /// Обёртка для работы с KOMPAS API5.
     /// Инкапсулирует запуск/подключение KOMPAS и базовые операции 3D-моделирования.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class Wrapper
     {
         /// <summary>

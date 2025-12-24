@@ -30,33 +30,82 @@ namespace BarbellBarPlugin.Tests
         public bool AttachCalled { get; private set; }
 
         /// <summary>
+        /// Количество вызовов AttachOrRunCAD.
+        /// </summary>
+        public int AttachCallCount { get; private set; }
+
+        /// <summary>
         /// Флаг, показывающий, что был вызван CreateDocument3D.
         /// </summary>
         public bool CreateDocCalled { get; private set; }
+
+        /// <summary>
+        /// Количество вызовов CreateDocument3D.
+        /// </summary>
+        public int CreateDocCallCount { get; private set; }
+
+        /// <summary>
+        /// Флаг, показывающий, что был вызван CloseActiveDocument3D.
+        /// </summary>
+        public bool CloseDocCalled { get; private set; }
+
+        /// <summary>
+        /// Количество вызовов CloseActiveDocument3D.
+        /// </summary>
+        public int CloseDocCallCount { get; private set; }
+
+        /// <summary>
+        /// Значение параметра save, с которым был вызван CloseActiveDocument3D.
+        /// </summary>
+        public bool? CloseDocSaveArg { get; private set; }
 
         /// <inheritdoc />
         public override void AttachOrRunCAD()
         {
             AttachCalled = true;
+            AttachCallCount++;
         }
 
         /// <inheritdoc />
         public override void CreateDocument3D()
         {
             CreateDocCalled = true;
+            CreateDocCallCount++;
+        }
+
+        /// <inheritdoc />
+        public override void CloseActiveDocument3D(bool save)
+        {
+            CloseDocCalled = true;
+            CloseDocCallCount++;
+            CloseDocSaveArg = save;
         }
 
         /// <summary>
         /// Логирует параметры создаваемого цилиндрического сегмента,
         /// добавляя их в коллекцию <see cref="Segments"/> вместо реального построения в KOMPAS.
         /// </summary>
-        /// <param name="startX">Начальная координата по оси X.</param>
-        /// <param name="endX">Конечная координата по оси X.</param>
-        /// <param name="diameter">Диаметр цилиндрического сегмента.</param>
-        /// <param name="name">Логическое имя сегмента (ручка, посадка и т.п.).</param>
         public override void CreateCylindricalSegment(double startX, double endX, double diameter, string name)
         {
             Segments.Add(new Segment(startX, endX, diameter, name));
+        }
+
+        /// <summary>
+        /// Утилита для тестов: сбросить флаги/счётчики/сегменты между вызовами Build, если надо.
+        /// </summary>
+        public void Reset()
+        {
+            Segments.Clear();
+
+            AttachCalled = false;
+            CreateDocCalled = false;
+            CloseDocCalled = false;
+
+            AttachCallCount = 0;
+            CreateDocCallCount = 0;
+            CloseDocCallCount = 0;
+
+            CloseDocSaveArg = null;
         }
     }
 }

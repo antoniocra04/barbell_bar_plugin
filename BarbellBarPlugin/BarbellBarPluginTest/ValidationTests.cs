@@ -8,6 +8,22 @@ namespace BarbellBarPlugin.Tests
     [TestFixture]
     public class ValidationTests
     {
+        [Test]
+        [Description("Проверяет, что конструктор ValidationError " +
+                    "корректно сохраняет имя поля и текст сообщения.")]
+        public void Ctor_Sets_FieldName_And_Message()
+        {
+            const string fieldName = "LengthSleeve";
+            const string message = "Ошибка";
+
+            var error = new ValidationError(fieldName, message);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(error.FieldName, Is.EqualTo(fieldName));
+                Assert.That(error.Message, Is.EqualTo(message));
+            });
+        }
         //TODO + remove all xml/
         [Test]
         //TODO + RSDN

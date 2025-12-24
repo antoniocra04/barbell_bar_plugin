@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -14,6 +15,7 @@ using BarbellBarPlugin.Validation;
 namespace BarbellBarPlugin
 {
     //TODO: XML +
+    [ExcludeFromCodeCoverage]
     public partial class BarbelBarPlugin : Form
     {
         private readonly BarBuilder _builder;

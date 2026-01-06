@@ -8,26 +8,36 @@ namespace BarbellBarPlugin.Tests
     [TestFixture]
     public class BarBuilderTests
     {
+        private const double Tolerance = 1e-6;
+
         [Test]
-        //TODO: RSDN
-        [Description("Проверяет, что конструктор BarBuilder выбрасывает ArgumentNullException, если Wrapper равен null.")]
+        //TODO: RSDN+
+        [Description(
+            "Проверяет, что конструктор BarBuilder выбрасывает " +
+            "ArgumentNullException, если Wrapper равен null.")]
         public void Ctor_Throws_WhenWrapperIsNull()
         {
-            Assert.Throws<ArgumentNullException>(() => new BarBuilder(null!));
+            Assert.Throws<ArgumentNullException>(
+                () => new BarBuilder(null!));
         }
 
         [Test]
-        [Description("Проверяет, что метод Build выбрасывает ArgumentNullException, если параметры грифа равны null.")]
+        [Description(
+            "Проверяет, что метод Build выбрасывает " +
+            "ArgumentNullException, если параметры грифа равны null.")]
         public void Build_Throws_WhenParametersIsNull()
         {
             var fake = new FakeKompasWrapper();
             var builder = new BarBuilder(fake);
 
-            Assert.Throws<ArgumentNullException>(() => builder.Build(null!));
+            Assert.Throws<ArgumentNullException>(
+                () => builder.Build(null!));
         }
 
         [Test]
-        [Description("Проверяет, что метод Build сохраняет ссылку на текущие параметры в свойство CurrentParameters.")]
+        [Description(
+            "Проверяет, что метод Build сохраняет ссылку на текущие " +
+            "параметры в свойство CurrentParameters.")]
         public void Build_SetsCurrentParameters()
         {
             var fake = new FakeKompasWrapper();
@@ -37,11 +47,15 @@ namespace BarbellBarPlugin.Tests
 
             builder.Build(parameters);
 
-            Assert.That(builder.CurrentParameters, Is.SameAs(parameters));
+            Assert.That(
+                builder.CurrentParameters,
+                Is.SameAs(parameters));
         }
 
         [Test]
-        [Description("Проверяет, что метод Build вызывает подключение к КОМПАС (AttachOrRunCAD) и создание нового документа (CreateDocument3D).")]
+        [Description(
+            "Проверяет, что метод Build вызывает подключение к КОМПАС " +
+            "(AttachOrRunCAD) и создание нового документа (CreateDocument3D).")]
         public void Build_CallsAttachAndCreateDocument()
         {
             var fake = new FakeKompasWrapper();
@@ -59,7 +73,9 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет, что AttachOrRunCAD вызывается только один раз при двух вызовах Build.")]
+        [Description(
+            "Проверяет, что AttachOrRunCAD вызывается только один раз " +
+            "при двух вызовах Build.")]
         public void Build_AttachesOnlyOnce_WhenCalledTwice()
         {
             var fake = new FakeKompasWrapper();
@@ -70,12 +86,16 @@ namespace BarbellBarPlugin.Tests
             builder.Build(p);
             builder.Build(p);
 
-            Assert.That(fake.AttachCallCount, Is.EqualTo(1),
+            Assert.That(
+                fake.AttachCallCount,
+                Is.EqualTo(1),
                 "AttachOrRunCAD должен вызываться только один раз.");
         }
 
         [Test]
-        [Description("Проверяет, что метод Build создаёт 5 сегментов в порядке: LeftSleeve, LeftSeparator, Handle, RightSeparator, RightSleeve.")]
+        [Description(
+            "Проверяет, что метод Build создаёт 5 сегментов в порядке: " +
+            "LeftSleeve, LeftSeparator, Handle, RightSeparator, RightSleeve.")]
         public void Build_CreatesFiveSegments_InCorrectOrder()
         {
             var fake = new FakeKompasWrapper();
@@ -100,7 +120,9 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет координаты X и диаметры сегментов (включая диаметр рукояти) на базовом наборе параметров.")]
+        [Description(
+            "Проверяет координаты X и диаметры сегментов " +
+            "(включая диаметр рукояти) на базовом наборе параметров.")]
         public void Build_SegmentsHaveCorrectCoordinatesAndDiameters()
         {
             var fake = new FakeKompasWrapper();
@@ -115,39 +137,82 @@ namespace BarbellBarPlugin.Tests
 
             Assert.Multiple(() =>
             {
-                //TODO: within to const
-                Assert.That(s[0].StartX, Is.EqualTo(0.0).Within(1e-6));
-                Assert.That(s[0].EndX, Is.EqualTo(350.0).Within(1e-6));
+                //TODO: within to const+
+                Assert.That(
+                    s[0].StartX,
+                    Is.EqualTo(0.0).Within(Tolerance));
 
-                Assert.That(s[1].StartX, Is.EqualTo(350.0).Within(1e-6));
-                Assert.That(s[1].EndX, Is.EqualTo(400.0).Within(1e-6));
+                Assert.That(
+                    s[0].EndX,
+                    Is.EqualTo(350.0).Within(Tolerance));
 
-                Assert.That(s[2].StartX, Is.EqualTo(400.0).Within(1e-6));
-                Assert.That(s[2].EndX, Is.EqualTo(1600.0).Within(1e-6));
+                Assert.That(
+                    s[1].StartX,
+                    Is.EqualTo(350.0).Within(Tolerance));
 
-                Assert.That(s[3].StartX, Is.EqualTo(1600.0).Within(1e-6));
-                Assert.That(s[3].EndX, Is.EqualTo(1650.0).Within(1e-6));
+                Assert.That(
+                    s[1].EndX,
+                    Is.EqualTo(400.0).Within(Tolerance));
 
-                Assert.That(s[4].StartX, Is.EqualTo(1650.0).Within(1e-6));
-                Assert.That(s[4].EndX, Is.EqualTo(2000.0).Within(1e-6));
+                Assert.That(
+                    s[2].StartX,
+                    Is.EqualTo(400.0).Within(Tolerance));
+
+                Assert.That(
+                    s[2].EndX,
+                    Is.EqualTo(1600.0).Within(Tolerance));
+
+                Assert.That(
+                    s[3].StartX,
+                    Is.EqualTo(1600.0).Within(Tolerance));
+
+                Assert.That(
+                    s[3].EndX,
+                    Is.EqualTo(1650.0).Within(Tolerance));
+
+                Assert.That(
+                    s[4].StartX,
+                    Is.EqualTo(1650.0).Within(Tolerance));
+
+                Assert.That(
+                    s[4].EndX,
+                    Is.EqualTo(2000.0).Within(Tolerance));
             });
 
             double expectedHandleDiameter =
-                Math.Min(parameters.SleeveDiameter, parameters.SeparatorDiameter) - 3.0;
+                Math.Min(
+                    parameters.SleeveDiameter,
+                    parameters.SeparatorDiameter) - 3.0;
 
             Assert.Multiple(() =>
             {
-                //TODO: RSDN
-                Assert.That(s[0].Diameter, Is.EqualTo(parameters.SleeveDiameter).Within(1e-6));
-                Assert.That(s[1].Diameter, Is.EqualTo(parameters.SeparatorDiameter).Within(1e-6));
-                Assert.That(s[2].Diameter, Is.EqualTo(expectedHandleDiameter).Within(1e-6));
-                Assert.That(s[3].Diameter, Is.EqualTo(parameters.SeparatorDiameter).Within(1e-6));
-                Assert.That(s[4].Diameter, Is.EqualTo(parameters.SleeveDiameter).Within(1e-6));
+                //TODO: RSDN+
+                Assert.That(
+                    s[0].Diameter,
+                    Is.EqualTo(parameters.SleeveDiameter).Within(Tolerance));
+
+                Assert.That(
+                    s[1].Diameter,
+                    Is.EqualTo(parameters.SeparatorDiameter).Within(Tolerance));
+
+                Assert.That(
+                    s[2].Diameter,
+                    Is.EqualTo(expectedHandleDiameter).Within(Tolerance));
+
+                Assert.That(
+                    s[3].Diameter,
+                    Is.EqualTo(parameters.SeparatorDiameter).Within(Tolerance));
+
+                Assert.That(
+                    s[4].Diameter,
+                    Is.EqualTo(parameters.SleeveDiameter).Within(Tolerance));
             });
         }
 
         [Test]
-        [Description("Проверяет, что если вычисленный диаметр рукояти <= 0, используется запасной диаметр (SeparatorDiameter * 0.8).")]
+        [Description(
+            "Проверяет, что если вычисленный диаметр рукояти <= 0, " +
+            "используется запасной диаметр (SeparatorDiameter * 0.8).")]
         public void Build_UsesFallbackHandleDiameter_WhenComputedDiameterIsNonPositive()
         {
             var fake = new FakeKompasWrapper();
@@ -165,11 +230,15 @@ namespace BarbellBarPlugin.Tests
             var handle = fake.Segments[2];
             double expected = parameters.SeparatorDiameter * 0.8;
 
-            Assert.That(handle.Diameter, Is.EqualTo(expected).Within(1e-6));
+            Assert.That(
+                handle.Diameter,
+                Is.EqualTo(expected).Within(Tolerance));
         }
 
         [Test]
-        [Description("Проверяет непокрытый finally: при closeDocumentAfterBuild=true вызывается CloseActiveDocument3D(save:false).")]
+        [Description(
+            "Проверяет непокрытый finally: при closeDocumentAfterBuild=true " +
+            "вызывается CloseActiveDocument3D(save:false).")]
         public void Build_ClosesDocumentInFinally_WhenCloseDocumentAfterBuildTrue()
         {
             var fake = new FakeKompasWrapper();
@@ -187,7 +256,9 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
-        [Description("Проверяет finally: при closeDocumentAfterBuild=false CloseActiveDocument3D не вызывается.")]
+        [Description(
+            "Проверяет finally: при closeDocumentAfterBuild=false " +
+            "CloseActiveDocument3D не вызывается.")]
         public void Build_DoesNotCloseDocument_WhenCloseDocumentAfterBuildFalse()
         {
             var fake = new FakeKompasWrapper();

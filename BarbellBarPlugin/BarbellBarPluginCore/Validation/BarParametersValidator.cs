@@ -1,0 +1,170 @@
+﻿using System;
+using System.Collections.Generic;
+using BarbellBarPlugin.Model;
+
+namespace BarbellBarPlugin.Validation
+{
+    //TODO: RSDN
+    /// <summary>
+    /// Описывает ошибку валидации отдельного параметра грифа.
+    /// </summary>
+    public class ValidationError
+    {
+        /// <summary>
+        /// Имя поля, привязанного к ошибке (используется для UI).
+        /// </summary>
+        public string FieldName { get; }
+
+        /// <summary>
+        /// Текст ошибки валидации.
+        /// </summary>
+        public string Message { get; }
+
+        /// <summary>
+        /// Создаёт новую ошибку валидации параметра.
+        /// </summary>
+        /// <param name="fieldName">Имя поля, с которым связана ошибка.</param>
+        /// <param name="message">Текст сообщения об ошибке.</param>
+        public ValidationError(string fieldName, string message)
+        {
+            FieldName = fieldName;
+            Message = message;
+        }
+    }
+
+    //TODO: RSDN
+    /// <summary>
+    /// Выполняет проверку параметров грифа на соответствие допустимым диапазонам.
+    /// </summary>
+    public static class BarParametersValidator
+    {
+        //TODO: RSDN
+        /// <summary>Минимальный и максимальный диаметр посадочной части (мм).</summary>
+        private const double SleeveDiameterMin = 25;
+        private const double SleeveDiameterMax = 40;
+
+        /// <summary>Минимальная и максимальная длина разделителя (мм).</summary>
+        private const double SeparatorLengthMin = 40;
+        private const double SeparatorLengthMax = 60;
+
+        /// <summary>Минимальная и максимальная длина ручки (мм).</summary>
+        private const double HandleLengthMin = 1200;
+        private const double HandleLengthMax = 1310;
+
+        /// <summary>Минимальный и максимальный диаметр разделителя (мм).</summary>
+        private const double SeparatorDiameterMin = 35;
+        private const double SeparatorDiameterMax = 50;
+
+        /// <summary>Минимальная и максимальная длина посадочной части (мм).</summary>
+        private const double SleeveLengthMin = 320;
+        private const double SleeveLengthMax = 420;
+
+        //+TODO: RSDN
+        /// <summary>
+        /// Проверяет параметры грифа и возвращает список ошибок валидации.
+        /// </summary>
+        /// <param name="p">Объект с параметрами грифа.</param>
+        /// <returns>
+        /// Список ошибок. Пустой список означает, что все параметры корректны.
+        /// </returns>
+        public static IReadOnlyList<ValidationError> Validate(BarParameters p)
+        {
+            var errors = new List<ValidationError>();
+
+            CheckRange(
+                p.SleeveDiameter,
+                SleeveDiameterMin,
+                SleeveDiameterMax,
+                "DiametrSleeve",
+                "Диаметр посадочной части",
+                errors);
+
+            CheckRange(
+                p.SeparatorLength,
+                SeparatorLengthMin,
+                SeparatorLengthMax,
+                "LengthSeparator",
+                "Длина разделителя",
+                errors);
+
+            CheckRange(
+                p.HandleLength,
+                HandleLengthMin,
+                HandleLengthMax,
+                "LengthHandle",
+                "Длина ручки",
+                errors);
+
+            CheckRange(
+                p.SeparatorDiameter,
+                SeparatorDiameterMin,
+                SeparatorDiameterMax,
+                "DiametrSeparator",
+                "Диаметр разделителя",
+                errors);
+
+            CheckRange(
+                p.SleeveLength,
+                SleeveLengthMin,
+                SleeveLengthMax,
+                "LengthSleeve",
+                "Длина посадочной части",
+                errors);
+
+            // Соотношение диаметров разделителя и посадки
+            if (p.SeparatorDiameter <= p.SleeveDiameter)
+            {
+                errors.Add(
+                    new ValidationError(
+                        "DiametrSeparator",
+                        //TODO: RSDN
+                        "Диаметр разделителя должен быть больше диаметра посадочной части."
+                    )
+                );
+            }
+
+            // Соотношение длины ручки и суммарной длины разделителей
+            if (p.HandleLength <= 2 * p.SeparatorLength)
+            {
+                errors.Add(
+                    new ValidationError(
+                        "LengthHandle",
+                        //TODO: RSDN
+                        "Длина ручки должна быть больше суммарной длины двух разделителей."
+                    )
+                );
+            }
+
+            return errors;
+        }
+
+        /// <summary>
+        /// Проверяет параметр на попадание в допустимый диапазон.
+        /// </summary>
+        /// <param name="value">Значение параметра.</param>
+        /// <param name="min">Минимально допустимое значение (включительно).</param>
+        /// <param name="max">Максимально допустимое значение (включительно).</param>
+        /// <param name="fieldName">Имя поля в UI.</param>
+        /// <param name="displayName">Название параметра для отображения пользователю.</param>
+        /// <param name="errors">Коллекция ошибок, куда добавляется ошибка.</param>
+        private static void CheckRange(
+            double value,
+            double min,
+            double max,
+            string fieldName,
+            string displayName,
+            List<ValidationError> errors)
+        {
+            if (value < min || value > max)
+            {
+                errors.Add(
+                    new ValidationError(
+                        fieldName,
+                        //TODO: RSDN
+                        $"{displayName} должен быть в диапазоне от {min:0} до {max:0} мм."
+                    )
+                );
+            }
+        }
+    }
+}

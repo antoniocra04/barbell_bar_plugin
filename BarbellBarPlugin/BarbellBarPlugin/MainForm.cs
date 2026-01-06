@@ -407,6 +407,7 @@ namespace BarbellBarPlugin
         /// Загружает параметры грифа из JSON-файла и подставляет их в форму.
         /// После загрузки выполняет валидацию и показывает ошибки (если есть).
         /// </summary>
+
         private void LoadParametersFromFile()
         {
             using var ofd = new OpenFileDialog
@@ -423,10 +424,16 @@ namespace BarbellBarPlugin
             try
             {
                 string json = File.ReadAllText(ofd.FileName, Encoding.UTF8);
-                var dto = JsonSerializer.Deserialize<BarParametersDto>(json, JsonOptions);
+
+                BarParametersDto? dto = JsonSerializer.Deserialize<BarParametersDto>(
+                    json,
+                    JsonOptions);
 
                 if (dto == null)
-                    throw new InvalidDataException("Файл не содержит параметров.");
+                {
+                    throw new InvalidDataException(
+                        "Файл не содержит корректных параметров.");
+                }
 
                 var parameters = dto.ToModel();
                 ApplyPreset(parameters);
@@ -445,14 +452,31 @@ namespace BarbellBarPlugin
                         MessageBoxIcon.Information);
                 }
             }
+            catch (JsonException)
+            {
+                MessageBox.Show(
+                    "Файл повреждён или имеет неверный формат JSON.",
+                    "Ошибка загрузки",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            catch (InvalidDataException)
+            {
+                MessageBox.Show(
+                    "Файл повреждён или не содержит параметров грифа.",
+                    "Ошибка загрузки",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    "Ошибка при загрузке: " + ex.Message,
+                    "Ошибка при загрузке файла: " + ex.Message,
                     "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
         }
+
     }
 }

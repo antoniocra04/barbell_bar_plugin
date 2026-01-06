@@ -74,4 +74,8 @@
     </COMReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BarbellBarPlugin.Core\BarbellBarPlugin.Core.csproj" />
+  </ItemGroup>
+
 </Project>

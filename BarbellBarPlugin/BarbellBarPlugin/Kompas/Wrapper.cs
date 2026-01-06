@@ -43,14 +43,24 @@ namespace BarbellBarPlugin.Kompas
 
             try
             {
-                Type t = Type.GetTypeFromProgID("KOMPAS.Application.5");
-                _kompas = (KompasObject)Activator.CreateInstance(t);
+                Type type = Type.GetTypeFromProgID("KOMPAS.Application.5");
+                if (type == null)
+                {
+                    throw new InvalidOperationException(
+                        "Не удалось получить ProgID KOMPAS.Application.5.");
+                }
+
+                object instance = Activator.CreateInstance(type);
+                _kompas = (KompasObject)instance;
+
                 _kompas.Visible = true;
                 _kompas.ActivateControllerAPI();
             }
-            catch
+            catch (Exception ex)
             {
-                throw new Exception("Не удалось запустить или подключиться к KOMPAS.");
+                throw new Exception(
+                    "Не удалось запустить или подключиться к KOMPAS.",
+                    ex);
             }
         }
 
@@ -67,6 +77,7 @@ namespace BarbellBarPlugin.Kompas
 
             _doc3D = (ksDocument3D)_kompas.Document3D();
             _doc3D.Create(false, true);
+
             _part = (ksPart)_doc3D.GetPart((short)Part_Type.pTop_Part);
         }
 
@@ -74,7 +85,7 @@ namespace BarbellBarPlugin.Kompas
         /// Закрывает активный 3D-документ.
         /// После закрытия освобождает COM-объекты документа и детали (Part).
         /// </summary>
-        /// //TODO: RSDN
+        /// //TODO: RSDN+
         /// <param name="save">True — сохранить документ перед закрытием; False — закрыть без сохранения.</param>
         public virtual void CloseActiveDocument3D(bool save = false)
         {
@@ -97,7 +108,7 @@ namespace BarbellBarPlugin.Kompas
             }
         }
 
-        //TODO: RSDN
+        //TODO: RSDN+
         /// <summary>
         /// Создаёт цилиндр вдоль оси X между <paramref name="startX"/> и <paramref name="endX"/>.
         /// Предполагается, что <paramref name="startX"/> ≥ 0 и <paramref name="endX"/> &gt; <paramref name="startX"/>.
@@ -109,15 +120,20 @@ namespace BarbellBarPlugin.Kompas
         /// <exception cref="InvalidOperationException">Если 3D-документ/деталь не инициализированы.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Если координаты или диаметр некорректны.</exception>
         /// <exception cref="ArgumentException">Если имя сегмента пустое.</exception>
-        public virtual void CreateCylindricalSegment(double startX, double endX, double diameter, string name)
+        public virtual void CreateCylindricalSegment(
+            double startX,
+            double endX,
+            double diameter,
+            string name)
         {
             if (_part == null)
             {
-                //TODO: RSDN
-                throw new InvalidOperationException("Часть не инициализирована. Вызовите CreateDocument3D().");
+                //TODO: RSDN+
+                throw new InvalidOperationException(
+                    "Часть не инициализирована. Вызовите CreateDocument3D().");
             }
 
-            if (startX < 0)
+            if (startX < 0.0)
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(startX),
@@ -131,7 +147,7 @@ namespace BarbellBarPlugin.Kompas
                     "Конечная координата endX должна быть больше startX.");
             }
 
-            if (diameter <= 0)
+            if (diameter <= 0.0)
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(diameter),
@@ -140,8 +156,10 @@ namespace BarbellBarPlugin.Kompas
 
             if (string.IsNullOrWhiteSpace(name))
             {
-                //TODO: RSDN
-                throw new ArgumentException("Имя сегмента не может быть пустым.", nameof(name));
+                //TODO: RSDN+
+                throw new ArgumentException(
+                    "Имя сегмента не может быть пустым.",
+                    nameof(name));
             }
 
             const double MinLength = 0.001;
@@ -154,37 +172,52 @@ namespace BarbellBarPlugin.Kompas
                     $"Недопустимая длина цилиндра: {length:0.###} мм.");
             }
 
-            ksEntity basePlane = _part.GetDefaultEntity((short)Obj3dType.o3d_planeYOZ);
+            ksEntity basePlane =
+                _part.GetDefaultEntity((short)Obj3dType.o3d_planeYOZ);
 
-            ksEntity offsetPlane = _part.NewEntity((short)Obj3dType.o3d_planeOffset);
+            ksEntity offsetPlane =
+                _part.NewEntity((short)Obj3dType.o3d_planeOffset);
+
             ksPlaneOffsetDefinition offsetDef =
                 (ksPlaneOffsetDefinition)offsetPlane.GetDefinition();
+
             offsetDef.SetPlane(basePlane);
             offsetDef.direction = true;
             offsetDef.offset = startX;
+
             offsetPlane.Create();
 
-            ksEntity sketch = _part.NewEntity((short)Obj3dType.o3d_sketch);
-            ksSketchDefinition sketchDef = (ksSketchDefinition)sketch.GetDefinition();
+            ksEntity sketch =
+                _part.NewEntity((short)Obj3dType.o3d_sketch);
+
+            ksSketchDefinition sketchDef =
+                (ksSketchDefinition)sketch.GetDefinition();
+
             sketchDef.SetPlane(offsetPlane);
             sketch.Create();
 
-            ksDocument2D doc2D = (ksDocument2D)sketchDef.BeginEdit();
+            ksDocument2D doc2D =
+                (ksDocument2D)sketchDef.BeginEdit();
+
             doc2D.ksCircle(0, 0, diameter / 2.0, 1);
             sketchDef.EndEdit();
 
-            ksEntity extrude = _part.NewEntity((short)Obj3dType.o3d_baseExtrusion);
+            ksEntity extrude =
+                _part.NewEntity((short)Obj3dType.o3d_baseExtrusion);
+
             ksBaseExtrusionDefinition extrudeDef =
                 (ksBaseExtrusionDefinition)extrude.GetDefinition();
 
             extrudeDef.directionType = (short)Direction_Type.dtNormal;
             extrudeDef.SetSketch(sketch);
+
             extrudeDef.SetSideParam(
                 true,
                 (short)End_Type.etBlind,
                 length,
                 0,
                 false);
+
             extrudeDef.SetThinParam(false, 0, 0, 0);
 
             extrude.Create();
@@ -196,42 +229,49 @@ namespace BarbellBarPlugin.Kompas
             }
             catch
             {
-                //TODO: ??
             }
         }
 
         /// <summary>
-        /// //TODO: RSDN
+        /// //TODO: RSDN+
         /// Вызывает закрытие документа через reflection/dynamic, чтобы не зависеть от точной сигнатуры метода Close в API.
         /// </summary>
         /// <param name="doc">3D-документ KOMPAS.</param>
         /// <param name="save">Признак сохранения.</param>
         private static void InvokeClose(object doc, bool save)
         {
-            Type t = doc.GetType();
+            Type type = doc.GetType();
 
-            MethodInfo closeBool = t.GetMethod("Close", new[] { typeof(bool) });
+            MethodInfo closeBool =
+                type.GetMethod("Close", new[] { typeof(bool) });
+
             if (closeBool != null)
             {
                 closeBool.Invoke(doc, new object[] { save });
                 return;
             }
 
-            MethodInfo closeInt = t.GetMethod("Close", new[] { typeof(int) });
+            MethodInfo closeInt =
+                type.GetMethod("Close", new[] { typeof(int) });
+
             if (closeInt != null)
             {
                 closeInt.Invoke(doc, new object[] { save ? 1 : 0 });
                 return;
             }
 
-            MethodInfo closeShort = t.GetMethod("Close", new[] { typeof(short) });
+            MethodInfo closeShort =
+                type.GetMethod("Close", new[] { typeof(short) });
+
             if (closeShort != null)
             {
                 closeShort.Invoke(doc, new object[] { (short)(save ? 1 : 0) });
                 return;
             }
 
-            MethodInfo closeNoArgs = t.GetMethod("Close", Type.EmptyTypes);
+            MethodInfo closeNoArgs =
+                type.GetMethod("Close", Type.EmptyTypes);
+
             if (closeNoArgs != null)
             {
                 closeNoArgs.Invoke(doc, null);
@@ -239,6 +279,7 @@ namespace BarbellBarPlugin.Kompas
             }
 
             dynamic d = doc;
+
             try
             {
                 d.Close(save);
@@ -274,7 +315,6 @@ namespace BarbellBarPlugin.Kompas
                 }
                 catch
                 {
-                    //TODO: RSDN
                 }
             }
         }

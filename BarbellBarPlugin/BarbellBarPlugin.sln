@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarbellBarPluginTest", "Bar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StressTesting", "StressTesting\StressTesting.csproj", "{ADEAA105-6312-453F-A0E3-BB069EE7DD5F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarbellBarPlugin.Core", "BarbellBarPlugin.Core\BarbellBarPlugin.Core.csproj", "{9A4F64EB-987B-458C-938E-2BBB1E5533C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{ADEAA105-6312-453F-A0E3-BB069EE7DD5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADEAA105-6312-453F-A0E3-BB069EE7DD5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADEAA105-6312-453F-A0E3-BB069EE7DD5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A4F64EB-987B-458C-938E-2BBB1E5533C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A4F64EB-987B-458C-938E-2BBB1E5533C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A4F64EB-987B-458C-938E-2BBB1E5533C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A4F64EB-987B-458C-938E-2BBB1E5533C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

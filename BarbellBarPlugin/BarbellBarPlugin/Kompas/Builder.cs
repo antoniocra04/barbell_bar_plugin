@@ -28,17 +28,25 @@ namespace BarbellBarPlugin.Kompas
         /// Создаёт новый экземпляр <see cref="BarBuilder"/>.
         /// </summary>
         /// <param name="wrapper">Объект, инкапсулирующий вызовы KOMPAS API.</param>
-        /// //TODO: RSDN
+        /// //TODO: RSDN+
         /// <exception cref="ArgumentNullException">Если <paramref name="wrapper"/> равен null.</exception>
         public BarBuilder(Wrapper wrapper)
         {
-            _wrapper = wrapper ?? throw new ArgumentNullException(nameof(wrapper));
+            if (wrapper == null)
+            {
+                throw new ArgumentNullException(nameof(wrapper));
+            }
+
+            _wrapper = wrapper;
         }
 
         /// <summary>
         /// Параметры грифа, использованные при последнем построении.
         /// </summary>
-        public BarParameters CurrentParameters => _parameters;
+        public BarParameters CurrentParameters
+        {
+            get { return _parameters; }
+        }
 
         /// <summary>
         /// Выполняет построение 3D-модели грифа.
@@ -46,12 +54,21 @@ namespace BarbellBarPlugin.Kompas
         /// Для нагрузочного тестирования можно включить закрытие документа после построения.
         /// </summary>
         /// <param name="parameters">Параметры грифа.</param>
-        /// //TODO: RSDN
-        /// <param name="closeDocumentAfterBuild">True — закрыть документ после построения; False — оставить документ открытым.</param>
+        /// //TODO: RSDN+
+        /// <param name="closeDocumentAfterBuild">
+        /// True — закрыть документ после построения; False — оставить документ открытым.
+        /// </param>
         /// <exception cref="ArgumentNullException">Если <paramref name="parameters"/> равен null.</exception>
-        public void Build(BarParameters parameters, bool closeDocumentAfterBuild = false)
+        public void Build(
+            BarParameters parameters,
+            bool closeDocumentAfterBuild = false)
         {
-            _parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            _parameters = parameters;
 
             if (!_isCadAttached)
             {
@@ -80,43 +97,48 @@ namespace BarbellBarPlugin.Kompas
         /// </summary>
         private void BuildBar()
         {
-            //TODO: RSDN
-            double Ls = _parameters.SleeveLength;
-            double Ld = _parameters.SeparatorLength;
-            double Lh = _parameters.HandleLength;
+            //TODO: RSDN+
+            double sleeveLength = _parameters.SleeveLength;
+            double separatorLength = _parameters.SeparatorLength;
+            double handleLength = _parameters.HandleLength;
+
+            double sleeveDiameter = _parameters.SleeveDiameter;
+            double separatorDiameter = _parameters.SeparatorDiameter;
 
             double handleDiameter =
-                Math.Min(_parameters.SleeveDiameter, _parameters.SeparatorDiameter) - 3.0;
+                Math.Min(sleeveDiameter, separatorDiameter) - 3.0;
 
-            //TODO: {}
-            if (handleDiameter <= 0)
-                handleDiameter = _parameters.SeparatorDiameter * 0.8;
+            //TODO: {}+
+            if (handleDiameter <= 0.0)
+            {
+                handleDiameter = separatorDiameter * 0.8;
+            }
 
             double leftSleeveStart = 0.0;
-            double leftSleeveEnd = Ls;
+            double leftSleeveEnd = sleeveLength;
 
             double leftSepStart = leftSleeveEnd;
-            double leftSepEnd = leftSepStart + Ld;
+            double leftSepEnd = leftSepStart + separatorLength;
 
             double handleStart = leftSepEnd;
-            double handleEnd = handleStart + Lh;
+            double handleEnd = handleStart + handleLength;
 
             double rightSepStart = handleEnd;
-            double rightSepEnd = rightSepStart + Ld;
+            double rightSepEnd = rightSepStart + separatorLength;
 
             double rightSleeveStart = rightSepEnd;
-            double rightSleeveEnd = rightSleeveStart + Ls;
+            double rightSleeveEnd = rightSleeveStart + sleeveLength;
 
             _wrapper.CreateCylindricalSegment(
                 leftSleeveStart,
                 leftSleeveEnd,
-                _parameters.SleeveDiameter,
+                sleeveDiameter,
                 "LeftSleeve");
 
             _wrapper.CreateCylindricalSegment(
                 leftSepStart,
                 leftSepEnd,
-                _parameters.SeparatorDiameter,
+                separatorDiameter,
                 "LeftSeparator");
 
             _wrapper.CreateCylindricalSegment(
@@ -128,13 +150,13 @@ namespace BarbellBarPlugin.Kompas
             _wrapper.CreateCylindricalSegment(
                 rightSepStart,
                 rightSepEnd,
-                _parameters.SeparatorDiameter,
+                separatorDiameter,
                 "RightSeparator");
 
             _wrapper.CreateCylindricalSegment(
                 rightSleeveStart,
                 rightSleeveEnd,
-                _parameters.SleeveDiameter,
+                sleeveDiameter,
                 "RightSleeve");
         }
     }

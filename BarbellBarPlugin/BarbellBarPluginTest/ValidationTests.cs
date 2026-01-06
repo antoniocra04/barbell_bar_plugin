@@ -9,8 +9,9 @@ namespace BarbellBarPlugin.Tests
     public class ValidationTests
     {
         [Test]
-        [Description("Проверяет, что конструктор ValidationError " +
-                    "корректно сохраняет имя поля и текст сообщения.")]
+        [Description(
+            "Проверяет, что конструктор ValidationError " +
+            "корректно сохраняет имя поля и текст сообщения.")]
         public void Ctor_Sets_FieldName_And_Message()
         {
             const string fieldName = "LengthSleeve";
@@ -24,9 +25,12 @@ namespace BarbellBarPlugin.Tests
                 Assert.That(error.Message, Is.EqualTo(message));
             });
         }
+
         [Test]
-        //TODO: RSDN
-        [Description("Проверяет, что конструктор BarParameters корректно инициализирует все свойства.")]
+        //TODO: RSDN+
+        [Description(
+            "Проверяет, что конструктор BarParameters корректно " +
+            "инициализирует все свойства.")]
         public void Constructor_AssignsProperties()
         {
             double sleeveDiameter = 30;
@@ -44,17 +48,33 @@ namespace BarbellBarPlugin.Tests
 
             Assert.Multiple(() =>
             {
-                Assert.That(parameters.SleeveDiameter, Is.EqualTo(sleeveDiameter));
-                Assert.That(parameters.SeparatorLength, Is.EqualTo(separatorLength));
-                Assert.That(parameters.HandleLength, Is.EqualTo(handleLength));
-                Assert.That(parameters.SeparatorDiameter, Is.EqualTo(separatorDiameter));
-                Assert.That(parameters.SleeveLength, Is.EqualTo(sleeveLength));
+                Assert.That(
+                    parameters.SleeveDiameter,
+                    Is.EqualTo(sleeveDiameter));
+
+                Assert.That(
+                    parameters.SeparatorLength,
+                    Is.EqualTo(separatorLength));
+
+                Assert.That(
+                    parameters.HandleLength,
+                    Is.EqualTo(handleLength));
+
+                Assert.That(
+                    parameters.SeparatorDiameter,
+                    Is.EqualTo(separatorDiameter));
+
+                Assert.That(
+                    parameters.SleeveLength,
+                    Is.EqualTo(sleeveLength));
             });
         }
 
         [Test]
-        //TODO: RSDN
-        [Description("Проверяет корректный расчёт свойства TotalLength (суммарной длины грифа).")]
+        //TODO: RSDN+
+        [Description(
+            "Проверяет корректный расчёт свойства TotalLength " +
+            "(суммарной длины грифа).")]
         public void TotalLength_CalculatedCorrectly()
         {
             var parameters = CreateParameters(
@@ -66,12 +86,16 @@ namespace BarbellBarPlugin.Tests
 
             double total = parameters.TotalLength;
 
-            Assert.That(total, Is.EqualTo(2000.0).Within(1e-6));
+            Assert.That(
+                total,
+                Is.EqualTo(2000.0).Within(1e-6));
         }
 
         [Test]
+        //TODO: RSDN+
         [Description(
-            //TODO: RSDN"Проверяет, что при корректных параметрах BarParametersValidator не возвращает ошибок.")]
+            "Проверяет, что при корректных параметрах " +
+            "BarParametersValidator не возвращает ошибок.")]
         public void Validator_ValidParameters_ReturnsNoErrors()
         {
             var parameters = CreateParameters(
@@ -87,22 +111,37 @@ namespace BarbellBarPlugin.Tests
             Assert.That(errors, Is.Empty);
         }
 
-        [TestCase(10, 50, 1250, 40, 350, "DiametrSleeve",
-            TestName = "Validator_SleeveDiameterOutOfRange_AddsError(DiametrSleeve)")]
-        [TestCase(30, 10, 1250, 40, 350, "LengthSeparator",
-            TestName = "Validator_SeparatorLengthOutOfRange_AddsError(LengthSeparator)")]
-        [TestCase(30, 50, 200, 40, 350, "LengthHandle",
-            TestName = "Validator_HandleLengthOutOfRange_AddsError(LengthHandle)")]
-        [TestCase(30, 50, 1250, 10, 350, "DiametrSeparator",
-            TestName = "Validator_SeparatorDiameterOutOfRange_AddsError(DiametrSeparator)")]
-        [TestCase(30, 50, 1250, 40, 100, "LengthSleeve",
-            TestName = "Validator_SleeveLengthOutOfRange_AddsError(LengthSleeve)")]
-        [TestCase(35, 50, 1250, 35, 350, "DiametrSeparator",
-            TestName = "Validator_SeparatorNotGreaterThanSleeve_AddsError(DiametrSeparator)")]
-        [TestCase(30, 50, 80, 40, 350, "LengthHandle",
-            TestName = "Validator_HandleTooShortComparedToSeparators_AddsError(LengthHandle)")]
-        [Description("Проверяет, что при некорректных значениях " +
-                    "параметров валидатор добавляет ошибку для ожидаемого поля.")]
+        [TestCase(
+            10, 50, 1250, 40, 350, "DiametrSleeve",
+            TestName =
+                "Validator_SleeveDiameterOutOfRange_AddsError(DiametrSleeve)")]
+        [TestCase(
+            30, 10, 1250, 40, 350, "LengthSeparator",
+            TestName =
+                "Validator_SeparatorLengthOutOfRange_AddsError(LengthSeparator)")]
+        [TestCase(
+            30, 50, 200, 40, 350, "LengthHandle",
+            TestName =
+                "Validator_HandleLengthOutOfRange_AddsError(LengthHandle)")]
+        [TestCase(
+            30, 50, 1250, 10, 350, "DiametrSeparator",
+            TestName =
+                "Validator_SeparatorDiameterOutOfRange_AddsError(DiametrSeparator)")]
+        [TestCase(
+            30, 50, 1250, 40, 100, "LengthSleeve",
+            TestName =
+                "Validator_SleeveLengthOutOfRange_AddsError(LengthSleeve)")]
+        [TestCase(
+            35, 50, 1250, 35, 350, "DiametrSeparator",
+            TestName =
+                "Validator_SeparatorNotGreaterThanSleeve_AddsError(DiametrSeparator)")]
+        [TestCase(
+            30, 50, 80, 40, 350, "LengthHandle",
+            TestName =
+                "Validator_HandleTooShortComparedToSeparators_AddsError(LengthHandle)")]
+        [Description(
+            "Проверяет, что при некорректных значениях " +
+            "параметров валидатор добавляет ошибку для ожидаемого поля.")]
         public void Validator_InvalidParameters_AddsExpectedError(
             double sleeveDiameter,
             double separatorLength,
@@ -124,9 +163,10 @@ namespace BarbellBarPlugin.Tests
                 errors.Any(e => e.FieldName == expectedFieldName),
                 Is.True,
                 $"Ожидалась ошибка для поля '{expectedFieldName}'. " +
-                //TODO: RSDN
+                //TODO: RSDN+
                 $"Фактические ошибки: {string.Join(", ", errors.Select(e => e.FieldName))}");
         }
+
         private static BarParameters CreateParameters(
             double sleeveDiameter,
             double separatorLength,

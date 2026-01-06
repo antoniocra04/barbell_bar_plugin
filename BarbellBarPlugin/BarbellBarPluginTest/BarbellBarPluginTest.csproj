@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BarbellBarPlugin.Core\BarbellBarPlugin.Core.csproj" />
     <ProjectReference Include="..\BarbellBarPlugin\BarbellBarPlugin.csproj" />
   </ItemGroup>
 

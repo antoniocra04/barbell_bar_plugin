@@ -1,16 +1,19 @@
 ﻿using System;
+
 using BarbellBarPlugin.Model;
 
 namespace BarbellBarPlugin.Kompas
 {
     /// <summary>
     /// Оркестратор построения 3D-модели грифа в KOMPAS 3D.
-    /// Разбивает гриф на пять цилиндрических сегментов по оси X и передаёт их обёртке KOMPAS.
+    /// Разбивает гриф на пять цилиндрических сегментов по оси X и
+    /// передаёт их обёртке KOMPAS.
     /// </summary>
     public class BarBuilder
     {
         /// <summary>
-        /// Обёртка над KOMPAS API, выполняющая построение сегментов и операции с документом.
+        /// Обёртка над KOMPAS API, выполняющая построение сегментов и
+        /// операции с документом.
         /// </summary>
         private readonly Wrapper _wrapper;
 
@@ -24,12 +27,16 @@ namespace BarbellBarPlugin.Kompas
         /// </summary>
         private BarParameters _parameters = null!;
 
+        // TODO:+ RSDN
         /// <summary>
         /// Создаёт новый экземпляр <see cref="BarBuilder"/>.
         /// </summary>
-        /// <param name="wrapper">Объект, инкапсулирующий вызовы KOMPAS API.</param>
-        /// //TODO: RSDN+
-        /// <exception cref="ArgumentNullException">Если <paramref name="wrapper"/> равен null.</exception>
+        /// <param name="wrapper">
+        /// Объект, инкапсулирующий вызовы KOMPAS API.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// Если <paramref name="wrapper"/> равен null.
+        /// </exception>
         public BarBuilder(Wrapper wrapper)
         {
             if (wrapper == null)
@@ -48,17 +55,22 @@ namespace BarbellBarPlugin.Kompas
             get { return _parameters; }
         }
 
+        // TODO:+ RSDN
         /// <summary>
         /// Выполняет построение 3D-модели грифа.
-        /// По умолчанию документ остаётся открытым (режим работы с пользователем).
-        /// Для нагрузочного тестирования можно включить закрытие документа после построения.
+        /// По умолчанию документ остаётся открытым (режим работы с
+        /// пользователем).
+        /// Для нагрузочного тестирования можно включить закрытие
+        /// документа после построения.
         /// </summary>
         /// <param name="parameters">Параметры грифа.</param>
-        /// //TODO: RSDN+
         /// <param name="closeDocumentAfterBuild">
-        /// True — закрыть документ после построения; False — оставить документ открытым.
+        /// True — закрыть документ после построения; False — оставить
+        /// документ открытым.
         /// </param>
-        /// <exception cref="ArgumentNullException">Если <paramref name="parameters"/> равен null.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// Если <paramref name="parameters"/> равен null.
+        /// </exception>
         public void Build(
             BarParameters parameters,
             bool closeDocumentAfterBuild = false)
@@ -97,7 +109,7 @@ namespace BarbellBarPlugin.Kompas
         /// </summary>
         private void BuildBar()
         {
-            //TODO: RSDN+
+            // TODO:+ RSDN
             double sleeveLength = _parameters.SleeveLength;
             double separatorLength = _parameters.SeparatorLength;
             double handleLength = _parameters.HandleLength;
@@ -108,7 +120,7 @@ namespace BarbellBarPlugin.Kompas
             double handleDiameter =
                 Math.Min(sleeveDiameter, separatorDiameter) - 3.0;
 
-            //TODO: {}+
+            // TODO:+ {}+
             if (handleDiameter <= 0.0)
             {
                 handleDiameter = separatorDiameter * 0.8;

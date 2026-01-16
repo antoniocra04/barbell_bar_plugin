@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using BarbellBarPlugin.Model;
 
 namespace BarbellBarPlugin.Validation
 {
-    //TODO: RSDN
+    // TODO:+ RSDN
     /// <summary>
     /// Описывает ошибку валидации отдельного параметра грифа.
     /// </summary>
@@ -23,8 +24,12 @@ namespace BarbellBarPlugin.Validation
         /// <summary>
         /// Создаёт новую ошибку валидации параметра.
         /// </summary>
-        /// <param name="fieldName">Имя поля, с которым связана ошибка.</param>
-        /// <param name="message">Текст сообщения об ошибке.</param>
+        /// <param name="fieldName">
+        /// Имя поля, с которым связана ошибка.
+        /// </param>
+        /// <param name="message">
+        /// Текст сообщения об ошибке.
+        /// </param>
         public ValidationError(string fieldName, string message)
         {
             FieldName = fieldName;
@@ -32,40 +37,60 @@ namespace BarbellBarPlugin.Validation
         }
     }
 
-    //TODO: RSDN
+    // TODO:+ RSDN
     /// <summary>
-    /// Выполняет проверку параметров грифа на соответствие допустимым диапазонам.
+    /// Выполняет проверку параметров грифа на соответствие допустимым
+    /// диапазонам.
     /// </summary>
     public static class BarParametersValidator
     {
-        //TODO: RSDN
-        /// <summary>Минимальный и максимальный диаметр посадочной части (мм).</summary>
+        // TODO:+ RSDN
+        /// <summary>
+        /// Минимальный и максимальный диаметр посадочной части (мм).
+        /// </summary>
         private const double SleeveDiameterMin = 25;
+
         private const double SleeveDiameterMax = 40;
 
-        /// <summary>Минимальная и максимальная длина разделителя (мм).</summary>
+        /// <summary>
+        /// Минимальная и максимальная длина разделителя (мм).
+        /// </summary>
         private const double SeparatorLengthMin = 40;
+
         private const double SeparatorLengthMax = 60;
 
-        /// <summary>Минимальная и максимальная длина ручки (мм).</summary>
+        /// <summary>
+        /// Минимальная и максимальная длина ручки (мм).
+        /// </summary>
         private const double HandleLengthMin = 1200;
+
         private const double HandleLengthMax = 1310;
 
-        /// <summary>Минимальный и максимальный диаметр разделителя (мм).</summary>
+        /// <summary>
+        /// Минимальный и максимальный диаметр разделителя (мм).
+        /// </summary>
         private const double SeparatorDiameterMin = 35;
+
         private const double SeparatorDiameterMax = 50;
 
-        /// <summary>Минимальная и максимальная длина посадочной части (мм).</summary>
+        /// <summary>
+        /// Минимальная и максимальная длина посадочной части (мм).
+        /// </summary>
         private const double SleeveLengthMin = 320;
+
         private const double SleeveLengthMax = 420;
 
-        //+TODO: RSDN
+        // TODO:+ RSDN
         /// <summary>
-        /// Проверяет параметры грифа и возвращает список ошибок валидации.
+        /// Проверяет параметры грифа и возвращает список ошибок
+        /// валидации.
         /// </summary>
-        /// <param name="p">Объект с параметрами грифа.</param>
+        /// <param name="p">
+        /// Объект с параметрами грифа.
+        /// </param>
         /// <returns>
-        /// Список ошибок. Пустой список означает, что все параметры корректны.
+        /// Список ошибок. Пустой список означает, что все параметры
+        /// корректны.
         /// </returns>
         public static IReadOnlyList<ValidationError> Validate(BarParameters p)
         {
@@ -117,10 +142,9 @@ namespace BarbellBarPlugin.Validation
                 errors.Add(
                     new ValidationError(
                         "DiametrSeparator",
-                        //TODO: RSDN
-                        "Диаметр разделителя должен быть больше диаметра посадочной части."
-                    )
-                );
+                        // TODO:+ RSDN
+                        "Диаметр разделителя должен быть больше "
+                            + "диаметра посадочной части."));
             }
 
             // Соотношение длины ручки и суммарной длины разделителей
@@ -129,10 +153,9 @@ namespace BarbellBarPlugin.Validation
                 errors.Add(
                     new ValidationError(
                         "LengthHandle",
-                        //TODO: RSDN
-                        "Длина ручки должна быть больше суммарной длины двух разделителей."
-                    )
-                );
+                        // TODO:+ RSDN
+                        "Длина ручки должна быть больше суммарной "
+                            + "длины двух разделителей."));
             }
 
             return errors;
@@ -142,11 +165,19 @@ namespace BarbellBarPlugin.Validation
         /// Проверяет параметр на попадание в допустимый диапазон.
         /// </summary>
         /// <param name="value">Значение параметра.</param>
-        /// <param name="min">Минимально допустимое значение (включительно).</param>
-        /// <param name="max">Максимально допустимое значение (включительно).</param>
+        /// <param name="min">
+        /// Минимально допустимое значение (включительно).
+        /// </param>
+        /// <param name="max">
+        /// Максимально допустимое значение (включительно).
+        /// </param>
         /// <param name="fieldName">Имя поля в UI.</param>
-        /// <param name="displayName">Название параметра для отображения пользователю.</param>
-        /// <param name="errors">Коллекция ошибок, куда добавляется ошибка.</param>
+        /// <param name="displayName">
+        /// Название параметра для отображения пользователю.
+        /// </param>
+        /// <param name="errors">
+        /// Коллекция ошибок, куда добавляется ошибка.
+        /// </param>
         private static void CheckRange(
             double value,
             double min,
@@ -160,10 +191,9 @@ namespace BarbellBarPlugin.Validation
                 errors.Add(
                     new ValidationError(
                         fieldName,
-                        //TODO: RSDN
-                        $"{displayName} должен быть в диапазоне от {min:0} до {max:0} мм."
-                    )
-                );
+                        // TODO:+ RSDN
+                        $"{displayName} должен быть в диапазоне "
+                            + $"от {min:0} до {max:0} мм."));
             }
         }
     }

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Forms;
-
+using BarbellBarPlugin.Core.Validation;
 using BarbellBarPlugin.Kompas;
 using BarbellBarPlugin.Model;
 using BarbellBarPlugin.Validation;

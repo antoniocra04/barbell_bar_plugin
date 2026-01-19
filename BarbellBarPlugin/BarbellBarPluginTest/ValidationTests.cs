@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using BarbellBarPlugin.Core.Validation;
 using BarbellBarPlugin.Model;
 using BarbellBarPlugin.Validation;
 using NUnit.Framework;

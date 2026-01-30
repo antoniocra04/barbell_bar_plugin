@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Wrapper.cs
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -35,11 +36,29 @@ namespace BarbellBarPlugin.Kompas
         /// <summary>
         /// Запускает KOMPAS, если он ещё не запущен,
         /// или присоединяется к уже работающему экземпляру.
+        /// Если ранее полученная COM-ссылка устарела (KOMPAS закрыт),
+        /// автоматически переподключается.
         /// </summary>
         public virtual void AttachOrRunCAD()
         {
             if (_kompas != null)
-                return;
+            {
+                try
+                {
+                    var isVisible = _kompas.Visible;
+                    return;
+                }
+                catch (COMException)
+                {
+                    ReleaseComObject(_kompas);
+                    _kompas = null;
+                }
+                catch
+                {
+                    ReleaseComObject(_kompas);
+                    _kompas = null;
+                }
+            }
 
             try
             {
@@ -59,6 +78,9 @@ namespace BarbellBarPlugin.Kompas
             }
             catch (Exception exception)
             {
+                ReleaseComObject(_kompas);
+                _kompas = null;
+
                 throw new Exception(
                     "Не удалось запустить или подключиться к KOMPAS.",
                     exception);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using BarbellBarPlugin.Kompas;
 
 namespace BarbellBarPlugin.Tests
@@ -74,7 +75,7 @@ namespace BarbellBarPlugin.Tests
         }
 
         /// <inheritdoc />
-        public override void CloseActiveDocument3D(bool save)
+        public override void CloseActiveDocument3D(bool save = false)
         {
             CloseDocCalled = true;
             CloseDocCallCount++;
@@ -83,11 +84,14 @@ namespace BarbellBarPlugin.Tests
 
         /// <summary>
         /// Логирует параметры создаваемого цилиндрического сегмента,
-        /// //TODO: RSDN
         /// добавляя их в коллекцию <see cref="Segments"/> вместо реального построения в KOMPAS.
         /// </summary>
-        /// //TODO: RSDN
-        public override void CreateCylindricalSegment(double startX, double endX, double diameter, string name)
+        //TODO: RSDN
+        public override void CreateCylindricalSegment(
+            double startX,
+            double endX,
+            double diameter,
+            string name)
         {
             Segments.Add(new Segment(startX, endX, diameter, name));
         }

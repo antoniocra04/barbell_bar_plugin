@@ -1,7 +1,7 @@
 ﻿using System.Linq;
+
+using BarbellBarPlugin.Core.Model;
 using BarbellBarPlugin.Core.Validation;
-using BarbellBarPlugin.Model;
-using BarbellBarPlugin.Validation;
 using NUnit.Framework;
 
 namespace BarbellBarPlugin.Tests
@@ -9,6 +9,8 @@ namespace BarbellBarPlugin.Tests
     [TestFixture]
     public class ValidationTests
     {
+        private const double Tolerance = 1e-6;
+
         [Test]
         [Description(
             "Проверяет, что конструктор ValidationError " +
@@ -28,19 +30,69 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
+        [Description(
+            "Проверяет, что конструктор ValidationError выбрасывает " +
+            "ArgumentException, если fieldName равен null.")]
+        public void Ctor_Throws_WhenFieldNameIsNull()
+        {
+            var exception = Assert.Throws<ArgumentException>(
+                () => new ValidationError(null!, "Сообщение"));
+
+            Assert.That(exception!.ParamName, Is.EqualTo("fieldName"));
+        }
+
+        [TestCase("", TestName = "Ctor_Throws_WhenFieldNameIsEmpty")]
+        [TestCase("   ", TestName = "Ctor_Throws_WhenFieldNameIsWhitespace")]
+        [Description(
+            "Проверяет, что конструктор ValidationError выбрасывает " +
+            "ArgumentException, если fieldName пустой/пробельный.")]
+        public void Ctor_Throws_WhenFieldNameIsInvalid(string fieldName)
+        {
+            var exception = Assert.Throws<ArgumentException>(
+                () => new ValidationError(fieldName, "Сообщение"));
+
+            Assert.That(exception!.ParamName, Is.EqualTo("fieldName"));
+        }
+
+        [Test]
+        [Description(
+            "Проверяет, что конструктор ValidationError выбрасывает " +
+            "ArgumentException, если message равен null.")]
+        public void Ctor_Throws_WhenMessageIsNull()
+        {
+            var exception = Assert.Throws<ArgumentException>(
+                () => new ValidationError("LengthSleeve", null!));
+
+            Assert.That(exception!.ParamName, Is.EqualTo("message"));
+        }
+
+        [TestCase("", TestName = "Ctor_Throws_WhenMessageIsEmpty")]
+        [TestCase("   ", TestName = "Ctor_Throws_WhenMessageIsWhitespace")]
+        [Description(
+            "Проверяет, что конструктор ValidationError выбрасывает " +
+            "ArgumentException, если message пустой/пробельный.")]
+        public void Ctor_Throws_WhenMessageIsInvalid(string message)
+        {
+            var exception = Assert.Throws<ArgumentException>(
+                () => new ValidationError("LengthSleeve", message));
+
+            Assert.That(exception!.ParamName, Is.EqualTo("message"));
+        }
+
+        [Test]
         //TODO: RSDN+
         [Description(
-            "Проверяет, что конструктор BarParameters корректно " +
+            "Проверяет, что конструктор BarbellBarParameters корректно " +
             "инициализирует все свойства.")]
         public void Constructor_AssignsProperties()
         {
-            double sleeveDiameter = 30;
-            double separatorLength = 50;
-            double handleLength = 1200;
-            double separatorDiameter = 40;
-            double sleeveLength = 350;
+            var sleeveDiameter = 30.0;
+            var separatorLength = 50.0;
+            var handleLength = 1200.0;
+            var separatorDiameter = 40.0;
+            var sleeveLength = 350.0;
 
-            var parameters = new BarParameters(
+            var parameters = new BarbellBarParameters(
                 sleeveDiameter,
                 separatorLength,
                 handleLength,
@@ -85,11 +137,11 @@ namespace BarbellBarPlugin.Tests
                 separatorDiameter: 40,
                 sleeveLength: 350);
 
-            double total = parameters.TotalLength;
+            var totalLength = parameters.TotalLength;
 
             Assert.That(
-                total,
-                Is.EqualTo(2000.0).Within(1e-6));
+                totalLength,
+                Is.EqualTo(2000.0).Within(Tolerance));
         }
 
         [Test]
@@ -100,11 +152,11 @@ namespace BarbellBarPlugin.Tests
         public void Validator_ValidParameters_ReturnsNoErrors()
         {
             var parameters = CreateParameters(
-                sleeveDiameter: 30,    // 25–40
-                separatorLength: 50,   // 40–60
-                handleLength: 1250,    // 1200–1310
-                separatorDiameter: 40, // 35–50
-                sleeveLength: 350      // 320–420
+                sleeveDiameter: 30,    
+                separatorLength: 50,   
+                handleLength: 1250, 
+                separatorDiameter: 40,
+                sleeveLength: 350
             );
 
             var errors = BarParametersValidator.Validate(parameters);
@@ -161,21 +213,21 @@ namespace BarbellBarPlugin.Tests
             var errors = BarParametersValidator.Validate(parameters);
 
             Assert.That(
-                errors.Any(e => e.FieldName == expectedFieldName),
+                errors.Any(error => error.FieldName == expectedFieldName),
                 Is.True,
                 $"Ожидалась ошибка для поля '{expectedFieldName}'. " +
                 //TODO: RSDN+
-                $"Фактические ошибки: {string.Join(", ", errors.Select(e => e.FieldName))}");
+                $"Фактические ошибки: {string.Join(", ", errors.Select(error => error.FieldName))}");
         }
 
-        private static BarParameters CreateParameters(
+        private static BarbellBarParameters CreateParameters(
             double sleeveDiameter,
             double separatorLength,
             double handleLength,
             double separatorDiameter,
             double sleeveLength)
         {
-            return new BarParameters(
+            return new BarbellBarParameters(
                 sleeveDiameter,
                 separatorLength,
                 handleLength,

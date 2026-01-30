@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using BarbellBarPlugin.Kompas;
-using BarbellBarPlugin.Model;
+using BarbellBarPlugin.Core.Model;
 using Microsoft.VisualBasic.Devices;
 
 namespace StressTesting
@@ -21,7 +21,7 @@ namespace StressTesting
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-            var parameters = new BarParameters(
+            var parameters = new BarbellBarParameters(
                 sleeveDiameter: 30,
                 separatorLength: 50,
                 handleLength: 1250,
@@ -29,7 +29,7 @@ namespace StressTesting
                 sleeveLength: 350);
 
             var wrapper = new Wrapper();
-            var builder = new BarBuilder(wrapper);
+            var builder = new Builder(wrapper);
 
             var stopWatch = new Stopwatch();
             var computerInfo = new ComputerInfo();

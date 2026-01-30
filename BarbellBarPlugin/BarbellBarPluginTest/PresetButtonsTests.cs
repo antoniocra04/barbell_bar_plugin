@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Reflection;
 using System.Threading;
+
 using NUnit.Framework;
 
 namespace BarbellBarPlugin.Tests
@@ -9,86 +10,98 @@ namespace BarbellBarPlugin.Tests
     [Apartment(ApartmentState.STA)]
     public class BarbelBarPlugin_PresetButtonsTests
     {
+        private const string SleeveDiameterTextBoxFieldName = "DiametrSleeveTextBox";
+        private const string SeparatorLengthTextBoxFieldName = "LengthSeparatorTextBox";
+        private const string HandleLengthTextBoxFieldName = "LengthHandleTextBox";
+        private const string SeparatorDiameterTextBoxFieldName = "DiametrSeparatorTextBox";
+        private const string SleeveLengthTextBoxFieldName = "LengthSleeveTextBox";
+
         [Test]
         //TODO: RSDN
-        [Description("Проверяет, что нажатие кнопки мужского пресета заполняет поля ожидаемыми значениями.")]
+        [Description(
+            "Проверяет, что нажатие кнопки мужского пресета заполняет поля ожидаемыми значениями.")]
         public void MalePresetButton_Click_FillsTextBoxes_WithMalePresetValues()
         {
-            var form = new BarbellBarPlugin.MainForm();
+            using var form = new BarbellBarPlugin.MainForm();
 
-            SetText(form, "DiametrSleeveTextBox", "999");
-            SetText(form, "LengthSeparatorTextBox", "999");
-            SetText(form, "LengthHandleTextBox", "999");
-            SetText(form, "DiametrSeparatorTextBox", "999");
-            SetText(form, "LengthSleeveTextBox", "999");
+            SetText(form, SleeveDiameterTextBoxFieldName, "999");
+            SetText(form, SeparatorLengthTextBoxFieldName, "999");
+            SetText(form, HandleLengthTextBoxFieldName, "999");
+            SetText(form, SeparatorDiameterTextBoxFieldName, "999");
+            SetText(form, SleeveLengthTextBoxFieldName, "999");
 
             InvokeClick(form, "MalePresetButton_Click");
 
             Assert.Multiple(() =>
             {
-                Assert.That(GetText(form, "DiametrSleeveTextBox"), Is.EqualTo("30"));
-                Assert.That(GetText(form, "LengthSeparatorTextBox"), Is.EqualTo("50"));
-                Assert.That(GetText(form, "LengthHandleTextBox"), Is.EqualTo("1250"));
-                Assert.That(GetText(form, "DiametrSeparatorTextBox"), Is.EqualTo("40"));
-                Assert.That(GetText(form, "LengthSleeveTextBox"), Is.EqualTo("350"));
+                Assert.That(GetText(form, SleeveDiameterTextBoxFieldName), Is.EqualTo("30"));
+                Assert.That(GetText(form, SeparatorLengthTextBoxFieldName), Is.EqualTo("50"));
+                Assert.That(GetText(form, HandleLengthTextBoxFieldName), Is.EqualTo("1250"));
+                Assert.That(GetText(form, SeparatorDiameterTextBoxFieldName), Is.EqualTo("40"));
+                Assert.That(GetText(form, SleeveLengthTextBoxFieldName), Is.EqualTo("350"));
             });
         }
 
         [Test]
         //TODO: RSDN
-        [Description("Проверяет, что нажатие кнопки женского пресета заполняет поля ожидаемыми значениями.")]
+        [Description(
+            "Проверяет, что нажатие кнопки женского пресета заполняет поля ожидаемыми значениями.")]
         public void FemalePresetButton_Click_FillsTextBoxes_WithFemalePresetValues()
         {
-            var form = new BarbellBarPlugin.MainForm();
+            using var form = new BarbellBarPlugin.MainForm();
 
-            SetText(form, "DiametrSleeveTextBox", "999");
-            SetText(form, "LengthSeparatorTextBox", "999");
-            SetText(form, "LengthHandleTextBox", "999");
-            SetText(form, "DiametrSeparatorTextBox", "999");
-            SetText(form, "LengthSleeveTextBox", "999");
+            SetText(form, SleeveDiameterTextBoxFieldName, "999");
+            SetText(form, SeparatorLengthTextBoxFieldName, "999");
+            SetText(form, HandleLengthTextBoxFieldName, "999");
+            SetText(form, SeparatorDiameterTextBoxFieldName, "999");
+            SetText(form, SleeveLengthTextBoxFieldName, "999");
 
             InvokeClick(form, "FemalePresetButton_Click");
 
             Assert.Multiple(() =>
             {
-                Assert.That(GetText(form, "DiametrSleeveTextBox"), Is.EqualTo("30"));
-                Assert.That(GetText(form, "LengthSeparatorTextBox"), Is.EqualTo("50"));
-                Assert.That(GetText(form, "LengthHandleTextBox"), Is.EqualTo("1200"));
-                Assert.That(GetText(form, "DiametrSeparatorTextBox"), Is.EqualTo("40"));
-                Assert.That(GetText(form, "LengthSleeveTextBox"), Is.EqualTo("320"));
+                Assert.That(GetText(form, SleeveDiameterTextBoxFieldName), Is.EqualTo("30"));
+                Assert.That(GetText(form, SeparatorLengthTextBoxFieldName), Is.EqualTo("50"));
+                Assert.That(GetText(form, HandleLengthTextBoxFieldName), Is.EqualTo("1200"));
+                Assert.That(GetText(form, SeparatorDiameterTextBoxFieldName), Is.EqualTo("40"));
+                Assert.That(GetText(form, SleeveLengthTextBoxFieldName), Is.EqualTo("320"));
             });
         }
 
         [Test]
-        [Description("Проверяет, что нажатие кнопки пресета сбрасывает визуальную валидацию (BackColor становится White).")]
+        [Description(
+            "Проверяет, что нажатие кнопки пресета сбрасывает визуальную валидацию (BackColor становится White).")]
         public void PresetButton_Click_ClearsValidation_BackColorToWhite()
         {
-            var form = new BarbellBarPlugin.MainForm();
+            using var form = new BarbellBarPlugin.MainForm();
 
-            SetBackColor(form, "DiametrSleeveTextBox", Color.MistyRose);
-            SetBackColor(form, "LengthSeparatorTextBox", Color.MistyRose);
-            SetBackColor(form, "LengthHandleTextBox", Color.MistyRose);
-            SetBackColor(form, "DiametrSeparatorTextBox", Color.MistyRose);
-            SetBackColor(form, "LengthSleeveTextBox", Color.MistyRose);
+            SetBackColor(form, SleeveDiameterTextBoxFieldName, Color.MistyRose);
+            SetBackColor(form, SeparatorLengthTextBoxFieldName, Color.MistyRose);
+            SetBackColor(form, HandleLengthTextBoxFieldName, Color.MistyRose);
+            SetBackColor(form, SeparatorDiameterTextBoxFieldName, Color.MistyRose);
+            SetBackColor(form, SleeveLengthTextBoxFieldName, Color.MistyRose);
 
             InvokeClick(form, "MalePresetButton_Click");
 
             Assert.Multiple(() =>
             {
-                Assert.That(GetBackColor(form, "DiametrSleeveTextBox"), Is.EqualTo(Color.White));
-                Assert.That(GetBackColor(form, "LengthSeparatorTextBox"), Is.EqualTo(Color.White));
-                Assert.That(GetBackColor(form, "LengthHandleTextBox"), Is.EqualTo(Color.White));
-                Assert.That(GetBackColor(form, "DiametrSeparatorTextBox"), Is.EqualTo(Color.White));
-                Assert.That(GetBackColor(form, "LengthSleeveTextBox"), Is.EqualTo(Color.White));
+                Assert.That(GetBackColor(form, SleeveDiameterTextBoxFieldName), Is.EqualTo(Color.White));
+                Assert.That(GetBackColor(form, SeparatorLengthTextBoxFieldName), Is.EqualTo(Color.White));
+                Assert.That(GetBackColor(form, HandleLengthTextBoxFieldName), Is.EqualTo(Color.White));
+                Assert.That(GetBackColor(form, SeparatorDiameterTextBoxFieldName), Is.EqualTo(Color.White));
+                Assert.That(GetBackColor(form, SleeveLengthTextBoxFieldName), Is.EqualTo(Color.White));
             });
         }
 
         private static void InvokeClick(object form, string handlerName)
         {
-            var mi = form.GetType().GetMethod(handlerName, BindingFlags.NonPublic | BindingFlags.Instance);
-            Assert.That(mi, Is.Not.Null, $"Не найден обработчик {handlerName}.");
+            var handlerMethod = form
+                .GetType()
+                .GetMethod(handlerName, BindingFlags.NonPublic | BindingFlags.Instance);
 
-            mi!.Invoke(form, new object[] { null!, System.EventArgs.Empty });
+            Assert.That(handlerMethod, Is.Not.Null, $"Не найден обработчик {handlerName}.");
+
+            handlerMethod!.Invoke(form, new object[] { null!, System.EventArgs.Empty });
         }
 
         private static void SetText(object form, string textBoxFieldName, string value)
@@ -113,13 +126,16 @@ namespace BarbellBarPlugin.Tests
 
         private static System.Windows.Forms.TextBox GetTextBox(object form, string fieldName)
         {
-            var fi = form.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
-            Assert.That(fi, Is.Not.Null, $"Не найдено поле {fieldName}.");
+            var fieldInfo = form
+                .GetType()
+                .GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
 
-            var tb = fi!.GetValue(form) as System.Windows.Forms.TextBox;
-            Assert.That(tb, Is.Not.Null, $"{fieldName} не является TextBox.");
+            Assert.That(fieldInfo, Is.Not.Null, $"Не найдено поле {fieldName}.");
 
-            return tb!;
+            var textBox = fieldInfo!.GetValue(form) as System.Windows.Forms.TextBox;
+            Assert.That(textBox, Is.Not.Null, $"{fieldName} не является TextBox.");
+
+            return textBox!;
         }
     }
 }

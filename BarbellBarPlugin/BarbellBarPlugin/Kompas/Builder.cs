@@ -1,5 +1,5 @@
-﻿using System;
-
+﻿// Builder.cs
+using System;
 using BarbellBarPlugin.Core.Model;
 
 namespace BarbellBarPlugin.Kompas
@@ -16,11 +16,6 @@ namespace BarbellBarPlugin.Kompas
         /// операции с документом.
         /// </summary>
         private readonly Wrapper _wrapper;
-
-        /// <summary>
-        /// Признак того, что подключение к КОМПАС уже выполнено.
-        /// </summary>
-        private bool _isCadAttached;
 
         /// <summary>
         /// Параметры грифа, использованные при последнем построении.
@@ -82,12 +77,7 @@ namespace BarbellBarPlugin.Kompas
 
             _parameters = parameters;
 
-            if (!_isCadAttached)
-            {
-                _wrapper.AttachOrRunCAD();
-                _isCadAttached = true;
-            }
-
+            _wrapper.AttachOrRunCAD();
             _wrapper.CreateDocument3D();
 
             try

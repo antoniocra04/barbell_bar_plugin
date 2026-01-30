@@ -1,5 +1,4 @@
-﻿// Builder.cs
-using System;
+﻿using System;
 using BarbellBarPlugin.Core.Model;
 
 namespace BarbellBarPlugin.Kompas

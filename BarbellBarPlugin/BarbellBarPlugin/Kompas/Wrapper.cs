@@ -1,5 +1,4 @@
-﻿// Wrapper.cs
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;

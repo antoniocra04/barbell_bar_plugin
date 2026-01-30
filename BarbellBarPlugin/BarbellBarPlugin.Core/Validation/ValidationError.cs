@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BarbellBarPlugin.Core.Validation
 {
@@ -30,8 +26,26 @@ namespace BarbellBarPlugin.Core.Validation
         /// <param name="message">
         /// Текст сообщения об ошибке.
         /// </param>
+        /// <exception cref="ArgumentException">
+        /// Если <paramref name="fieldName"/> или <paramref name="message"/>
+        /// пустые или содержат только пробелы.
+        /// </exception>
         public ValidationError(string fieldName, string message)
         {
+            if (string.IsNullOrWhiteSpace(fieldName))
+            {
+                throw new ArgumentException(
+                    "Имя поля не может быть пустым.",
+                    nameof(fieldName));
+            }
+
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException(
+                    "Сообщение об ошибке не может быть пустым.",
+                    nameof(message));
+            }
+
             FieldName = fieldName;
             Message = message;
         }

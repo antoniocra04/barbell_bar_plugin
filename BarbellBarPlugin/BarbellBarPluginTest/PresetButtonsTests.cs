@@ -14,7 +14,7 @@ namespace BarbellBarPlugin.Tests
         [Description("Проверяет, что нажатие кнопки мужского пресета заполняет поля ожидаемыми значениями.")]
         public void MalePresetButton_Click_FillsTextBoxes_WithMalePresetValues()
         {
-            var form = new BarbellBarPlugin.BarbelBarPlugin();
+            var form = new BarbellBarPlugin.MainForm();
 
             SetText(form, "DiametrSleeveTextBox", "999");
             SetText(form, "LengthSeparatorTextBox", "999");
@@ -39,7 +39,7 @@ namespace BarbellBarPlugin.Tests
         [Description("Проверяет, что нажатие кнопки женского пресета заполняет поля ожидаемыми значениями.")]
         public void FemalePresetButton_Click_FillsTextBoxes_WithFemalePresetValues()
         {
-            var form = new BarbellBarPlugin.BarbelBarPlugin();
+            var form = new BarbellBarPlugin.MainForm();
 
             SetText(form, "DiametrSleeveTextBox", "999");
             SetText(form, "LengthSeparatorTextBox", "999");
@@ -63,7 +63,7 @@ namespace BarbellBarPlugin.Tests
         [Description("Проверяет, что нажатие кнопки пресета сбрасывает визуальную валидацию (BackColor становится White).")]
         public void PresetButton_Click_ClearsValidation_BackColorToWhite()
         {
-            var form = new BarbellBarPlugin.BarbelBarPlugin();
+            var form = new BarbellBarPlugin.MainForm();
 
             SetBackColor(form, "DiametrSleeveTextBox", Color.MistyRose);
             SetBackColor(form, "LengthSeparatorTextBox", Color.MistyRose);

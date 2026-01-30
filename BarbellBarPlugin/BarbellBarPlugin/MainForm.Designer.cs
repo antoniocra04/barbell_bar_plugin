@@ -1,6 +1,6 @@
 ﻿namespace BarbellBarPlugin
 {
-    partial class BarbelBarPlugin
+    partial class MainForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -267,7 +267,7 @@
             loadButton.UseVisualStyleBackColor = true;
             loadButton.Click += LoadParamsButton_Click;
             // 
-            // BarbelBarPlugin
+            // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -279,7 +279,7 @@
             Controls.Add(groupBox1);
             MaximumSize = new Size(382, 467);
             MinimumSize = new Size(382, 467);
-            Name = "BarbelBarPlugin";
+            Name = "MainForm";
             Text = "BarbellBarPlugin";
             Load += BarbelBarPlugin_Load;
             groupBox1.ResumeLayout(false);

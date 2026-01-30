@@ -1,6 +1,6 @@
 ﻿using System;
 
-using BarbellBarPlugin.Model;
+using BarbellBarPlugin.Core.Model;
 
 namespace BarbellBarPlugin.Kompas
 {
@@ -9,7 +9,7 @@ namespace BarbellBarPlugin.Kompas
     /// Разбивает гриф на пять цилиндрических сегментов по оси X и
     /// передаёт их обёртке KOMPAS.
     /// </summary>
-    public class BarBuilder
+    public class Builder
     {
         /// <summary>
         /// Обёртка над KOMPAS API, выполняющая построение сегментов и
@@ -25,11 +25,11 @@ namespace BarbellBarPlugin.Kompas
         /// <summary>
         /// Параметры грифа, использованные при последнем построении.
         /// </summary>
-        private BarParameters _parameters = null!;
+        private BarbellBarParameters _parameters = null!;
 
         // TODO:+ RSDN
         /// <summary>
-        /// Создаёт новый экземпляр <see cref="BarBuilder"/>.
+        /// Создаёт новый экземпляр <see cref="Builder"/>.
         /// </summary>
         /// <param name="wrapper">
         /// Объект, инкапсулирующий вызовы KOMPAS API.
@@ -37,7 +37,7 @@ namespace BarbellBarPlugin.Kompas
         /// <exception cref="ArgumentNullException">
         /// Если <paramref name="wrapper"/> равен null.
         /// </exception>
-        public BarBuilder(Wrapper wrapper)
+        public Builder(Wrapper wrapper)
         {
             if (wrapper == null)
             {
@@ -50,7 +50,7 @@ namespace BarbellBarPlugin.Kompas
         /// <summary>
         /// Параметры грифа, использованные при последнем построении.
         /// </summary>
-        public BarParameters CurrentParameters
+        public BarbellBarParameters CurrentParameters
         {
             get { return _parameters; }
         }
@@ -72,7 +72,7 @@ namespace BarbellBarPlugin.Kompas
         /// Если <paramref name="parameters"/> равен null.
         /// </exception>
         public void Build(
-            BarParameters parameters,
+            BarbellBarParameters parameters,
             bool closeDocumentAfterBuild = false)
         {
             if (parameters == null)
@@ -110,14 +110,14 @@ namespace BarbellBarPlugin.Kompas
         private void BuildBar()
         {
             // TODO:+ RSDN
-            double sleeveLength = _parameters.SleeveLength;
-            double separatorLength = _parameters.SeparatorLength;
-            double handleLength = _parameters.HandleLength;
+            var sleeveLength = _parameters.SleeveLength;
+            var separatorLength = _parameters.SeparatorLength;
+            var handleLength = _parameters.HandleLength;
 
-            double sleeveDiameter = _parameters.SleeveDiameter;
-            double separatorDiameter = _parameters.SeparatorDiameter;
+            var sleeveDiameter = _parameters.SleeveDiameter;
+            var separatorDiameter = _parameters.SeparatorDiameter;
 
-            double handleDiameter =
+            var handleDiameter =
                 Math.Min(sleeveDiameter, separatorDiameter) - 3.0;
 
             // TODO:+ {}+
@@ -126,20 +126,20 @@ namespace BarbellBarPlugin.Kompas
                 handleDiameter = separatorDiameter * 0.8;
             }
 
-            double leftSleeveStart = 0.0;
-            double leftSleeveEnd = sleeveLength;
+            var leftSleeveStart = 0.0;
+            var leftSleeveEnd = sleeveLength;
 
-            double leftSepStart = leftSleeveEnd;
-            double leftSepEnd = leftSepStart + separatorLength;
+            var leftSeparatorStart = leftSleeveEnd;
+            var leftSeparatorEnd = leftSeparatorStart + separatorLength;
 
-            double handleStart = leftSepEnd;
-            double handleEnd = handleStart + handleLength;
+            var handleStart = leftSeparatorEnd;
+            var handleEnd = handleStart + handleLength;
 
-            double rightSepStart = handleEnd;
-            double rightSepEnd = rightSepStart + separatorLength;
+            var rightSeparatorStart = handleEnd;
+            var rightSeparatorEnd = rightSeparatorStart + separatorLength;
 
-            double rightSleeveStart = rightSepEnd;
-            double rightSleeveEnd = rightSleeveStart + sleeveLength;
+            var rightSleeveStart = rightSeparatorEnd;
+            var rightSleeveEnd = rightSleeveStart + sleeveLength;
 
             _wrapper.CreateCylindricalSegment(
                 leftSleeveStart,
@@ -148,8 +148,8 @@ namespace BarbellBarPlugin.Kompas
                 "LeftSleeve");
 
             _wrapper.CreateCylindricalSegment(
-                leftSepStart,
-                leftSepEnd,
+                leftSeparatorStart,
+                leftSeparatorEnd,
                 separatorDiameter,
                 "LeftSeparator");
 
@@ -160,8 +160,8 @@ namespace BarbellBarPlugin.Kompas
                 "Handle");
 
             _wrapper.CreateCylindricalSegment(
-                rightSepStart,
-                rightSepEnd,
+                rightSeparatorStart,
+                rightSeparatorEnd,
                 separatorDiameter,
                 "RightSeparator");
 

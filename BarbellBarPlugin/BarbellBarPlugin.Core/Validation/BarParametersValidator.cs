@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using BarbellBarPlugin.Model;
-using BarbellBarPlugin.Core.Validation;
+﻿using System.Collections.Generic;
 
-namespace BarbellBarPlugin.Validation
+using BarbellBarPlugin.Core.Model;
+
+namespace BarbellBarPlugin.Core.Validation
 {
     // TODO:+ RSDN
     /// <summary>
@@ -53,19 +52,19 @@ namespace BarbellBarPlugin.Validation
         /// Проверяет параметры грифа и возвращает список ошибок
         /// валидации.
         /// </summary>
-        /// <param name="p">
+        /// <param name="parameters">
         /// Объект с параметрами грифа.
         /// </param>
         /// <returns>
         /// Список ошибок. Пустой список означает, что все параметры
         /// корректны.
         /// </returns>
-        public static IReadOnlyList<ValidationError> Validate(BarParameters p)
+        public static IReadOnlyList<ValidationError> Validate(BarbellBarParameters parameters)
         {
             var errors = new List<ValidationError>();
 
             CheckRange(
-                p.SleeveDiameter,
+                parameters.SleeveDiameter,
                 SleeveDiameterMin,
                 SleeveDiameterMax,
                 "DiametrSleeve",
@@ -73,7 +72,7 @@ namespace BarbellBarPlugin.Validation
                 errors);
 
             CheckRange(
-                p.SeparatorLength,
+                parameters.SeparatorLength,
                 SeparatorLengthMin,
                 SeparatorLengthMax,
                 "LengthSeparator",
@@ -81,7 +80,7 @@ namespace BarbellBarPlugin.Validation
                 errors);
 
             CheckRange(
-                p.HandleLength,
+                parameters.HandleLength,
                 HandleLengthMin,
                 HandleLengthMax,
                 "LengthHandle",
@@ -89,7 +88,7 @@ namespace BarbellBarPlugin.Validation
                 errors);
 
             CheckRange(
-                p.SeparatorDiameter,
+                parameters.SeparatorDiameter,
                 SeparatorDiameterMin,
                 SeparatorDiameterMax,
                 "DiametrSeparator",
@@ -97,7 +96,7 @@ namespace BarbellBarPlugin.Validation
                 errors);
 
             CheckRange(
-                p.SleeveLength,
+                parameters.SleeveLength,
                 SleeveLengthMin,
                 SleeveLengthMax,
                 "LengthSleeve",
@@ -105,7 +104,7 @@ namespace BarbellBarPlugin.Validation
                 errors);
 
             // Соотношение диаметров разделителя и посадки
-            if (p.SeparatorDiameter <= p.SleeveDiameter)
+            if (parameters.SeparatorDiameter <= parameters.SleeveDiameter)
             {
                 errors.Add(
                     new ValidationError(
@@ -116,7 +115,7 @@ namespace BarbellBarPlugin.Validation
             }
 
             // Соотношение длины ручки и суммарной длины разделителей
-            if (p.HandleLength <= 2 * p.SeparatorLength)
+            if (parameters.HandleLength <= 2 * parameters.SeparatorLength)
             {
                 errors.Add(
                     new ValidationError(

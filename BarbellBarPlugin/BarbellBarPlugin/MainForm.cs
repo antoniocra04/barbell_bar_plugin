@@ -10,8 +10,8 @@ using System.Text.Json;
 using System.Windows.Forms;
 using BarbellBarPlugin.Core.Validation;
 using BarbellBarPlugin.Kompas;
-using BarbellBarPlugin.Model;
-using BarbellBarPlugin.Validation;
+using BarbellBarPlugin.Core.Model;
+using BarbellBarPlugin.Core.Validation;
 
 namespace BarbellBarPlugin
 {
@@ -20,12 +20,12 @@ namespace BarbellBarPlugin
     /// Форма плагина для построения модели грифа в KOMPAS.
     /// </summary>
     [ExcludeFromCodeCoverage]
-    public partial class BarbelBarPlugin : Form
+    public partial class MainForm : Form
     {
         /// <summary>
         /// Построитель модели грифа.
         /// </summary>
-        private readonly BarBuilder _builder;
+        private readonly Builder _builder;
 
         /// <summary>
         /// Настройки сериализации/десериализации JSON.
@@ -43,45 +43,73 @@ namespace BarbellBarPlugin
         /// </summary>
         private sealed class BarParametersDto
         {
+            /// <summary>
+            /// Диаметр посадочной части грифа.
+            /// </summary>
             public double SleeveDiameter { get; set; }
 
+            /// <summary>
+            /// Длина разделителя.
+            /// </summary>
             public double SeparatorLength { get; set; }
 
+            /// <summary>
+            /// Длина ручки (рабочей части хвата).
+            /// </summary>
             public double HandleLength { get; set; }
 
+            /// <summary>
+            /// Диаметр разделителя.
+            /// </summary>
             public double SeparatorDiameter { get; set; }
 
+            /// <summary>
+            /// Длина посадочной части грифа.
+            /// </summary>
             public double SleeveLength { get; set; }
 
-            public static BarParametersDto FromModel(BarParameters p) =>
-                new BarParametersDto
+            /// <summary>
+            /// Создаёт DTO на основе модели параметров грифа.
+            /// </summary>
+            /// <param name="parameters">Модель параметров грифа.</param>
+            /// <returns>DTO для сериализации/десериализации.</returns>
+            public static BarParametersDto FromModel(BarbellBarParameters parameters)
+            {
+                return new BarParametersDto
                 {
-                    SleeveDiameter = p.SleeveDiameter,
-                    SeparatorLength = p.SeparatorLength,
-                    HandleLength = p.HandleLength,
-                    SeparatorDiameter = p.SeparatorDiameter,
-                    SleeveLength = p.SleeveLength
+                    SleeveDiameter = parameters.SleeveDiameter,
+                    SeparatorLength = parameters.SeparatorLength,
+                    HandleLength = parameters.HandleLength,
+                    SeparatorDiameter = parameters.SeparatorDiameter,
+                    SleeveLength = parameters.SleeveLength
                 };
+            }
 
-            public BarParameters ToModel() =>
-                new BarParameters(
+            /// <summary>
+            /// Преобразует DTO в модель параметров грифа.
+            /// </summary>
+            /// <returns>Модель параметров грифа.</returns>
+            public BarbellBarParameters ToModel()
+            {
+                return new BarbellBarParameters(
                     sleeveDiameter: SleeveDiameter,
                     separatorLength: SeparatorLength,
                     handleLength: HandleLength,
                     separatorDiameter: SeparatorDiameter,
                     sleeveLength: SleeveLength);
+            }
         }
 
         /// <summary>
         /// Инициализирует форму плагина и создаёт построитель грифа
         /// с обёрткой KOMPAS.
         /// </summary>
-        public BarbelBarPlugin()
+        public MainForm()
         {
             InitializeComponent();
 
             var wrapper = new Wrapper();
-            _builder = new BarBuilder(wrapper);
+            _builder = new Builder(wrapper);
         }
 
         /// <summary>
@@ -126,11 +154,10 @@ namespace BarbellBarPlugin
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
                 MessageBox.Show(
-                    "Ошибка при построении модели: "
-                        + ex.Message,
+                    "Ошибка при построении модели: " + exception.Message,
                     "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -149,40 +176,40 @@ namespace BarbellBarPlugin
         /// True, если все значения успешно считаны и преобразованы в
         /// числа; иначе false.
         /// </returns>
-        private bool TryReadParameters(out BarParameters parameters)
+        private bool TryReadParameters(out BarbellBarParameters parameters)
         {
             parameters = null!;
 
             var parseErrors = new List<ValidationError>();
 
-            double sleeveDiameter = ParseOrCollectError(
+            var sleeveDiameter = ParseOrCollectError(
                 DiametrSleeveTextBox,
-                "DiametrSleeve",
-                "Диаметр посадочной части",
+                fieldName: "DiametrSleeve",
+                displayName: "Диаметр посадочной части",
                 parseErrors);
 
-            double separatorLength = ParseOrCollectError(
+            var separatorLength = ParseOrCollectError(
                 LengthSeparatorTextBox,
-                "LengthSeparator",
-                "Длинна разделителя",
+                fieldName: "LengthSeparator",
+                displayName: "Длина разделителя",
                 parseErrors);
 
-            double handleLength = ParseOrCollectError(
+            var handleLength = ParseOrCollectError(
                 LengthHandleTextBox,
-                "LengthHandle",
-                "Длинна ручки",
+                fieldName: "LengthHandle",
+                displayName: "Длина ручки",
                 parseErrors);
 
-            double separatorDiameter = ParseOrCollectError(
+            var separatorDiameter = ParseOrCollectError(
                 DiametrSeparatorTextBox,
-                "DiametrSeparator",
-                "Диаметр разделителя",
+                fieldName: "DiametrSeparator",
+                displayName: "Диаметр разделителя",
                 parseErrors);
 
-            double sleeveLength = ParseOrCollectError(
+            var sleeveLength = ParseOrCollectError(
                 LengthSleeveTextBox,
-                "LengthSleeve",
-                "Длинна посадочной части",
+                fieldName: "LengthSleeve",
+                displayName: "Длина посадочной части",
                 parseErrors);
 
             if (parseErrors.Count > 0)
@@ -191,7 +218,7 @@ namespace BarbellBarPlugin
                 return false;
             }
 
-            parameters = new BarParameters(
+            parameters = new BarbellBarParameters(
                 sleeveDiameter,
                 separatorLength,
                 handleLength,
@@ -229,19 +256,18 @@ namespace BarbellBarPlugin
             string displayName,
             List<ValidationError> errors)
         {
-            string text = textBox.Text.Trim().Replace(',', '.');
+            var text = textBox.Text.Trim().Replace(',', '.');
 
             // TODO:+ RSDN
             if (!double.TryParse(
                     text,
                     NumberStyles.Float,
                     CultureInfo.InvariantCulture,
-                    out double value))
+                    out var value))
             {
-                string msg =
-                    $"Некорректное число в поле \"{displayName}\".";
-                MarkError(textBox, msg);
-                errors.Add(new ValidationError(fieldName, msg));
+                var message = $"Некорректное число в поле \"{displayName}\".";
+                MarkError(textBox, message);
+                errors.Add(new ValidationError(fieldName, message));
                 return 0.0;
             }
 
@@ -288,13 +314,13 @@ namespace BarbellBarPlugin
         /// </param>
         private void ShowValidationErrors(IReadOnlyList<ValidationError> errors)
         {
-            var sb = new StringBuilder();
-            sb.AppendLine("Обнаружены ошибки ввода:");
-            sb.AppendLine();
+            var messageBuilder = new StringBuilder();
+            messageBuilder.AppendLine("Обнаружены ошибки ввода:");
+            messageBuilder.AppendLine();
 
             foreach (var error in errors)
             {
-                TextBox? tb = error.FieldName switch
+                var relatedTextBox = error.FieldName switch
                 {
                     "DiametrSleeve" => DiametrSleeveTextBox,
                     "LengthSeparator" => LengthSeparatorTextBox,
@@ -304,14 +330,14 @@ namespace BarbellBarPlugin
                     _ => null
                 };
 
-                if (tb != null)
-                    MarkError(tb, error.Message);
+                if (relatedTextBox != null)
+                    MarkError(relatedTextBox, error.Message);
 
-                sb.AppendLine("• " + error.Message);
+                messageBuilder.AppendLine("• " + error.Message);
             }
 
             MessageBox.Show(
-                sb.ToString(),
+                messageBuilder.ToString(),
                 "Ошибка ввода параметров",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning);
@@ -325,7 +351,7 @@ namespace BarbellBarPlugin
         /// <param name="preset">
         /// Набор параметров грифа, который нужно подставить в форму.
         /// </param>
-        private void ApplyPreset(BarParameters preset)
+        private void ApplyPreset(BarbellBarParameters preset)
         {
             ClearValidation();
 
@@ -351,9 +377,9 @@ namespace BarbellBarPlugin
         /// методички/валидатора.
         /// </summary>
         /// <returns>Параметры мужского грифа.</returns>
-        private static BarParameters CreateMalePreset()
+        private static BarbellBarParameters CreateMalePreset()
         {
-            return new BarParameters(
+            return new BarbellBarParameters(
                 sleeveDiameter: 30,
                 separatorLength: 50,
                 handleLength: 1250,
@@ -367,9 +393,9 @@ namespace BarbellBarPlugin
         /// методички/валидатора.
         /// </summary>
         /// <returns>Параметры женского грифа.</returns>
-        private static BarParameters CreateFemalePreset()
+        private static BarbellBarParameters CreateFemalePreset()
         {
-            return new BarParameters(
+            return new BarbellBarParameters(
                 sleeveDiameter: 30,
                 separatorLength: 50,
                 handleLength: 1200,
@@ -432,7 +458,7 @@ namespace BarbellBarPlugin
                 return;
             }
 
-            using var sfd = new SaveFileDialog
+            using var saveFileDialog = new SaveFileDialog
             {
                 Title = "Сохранить параметры грифа",
                 Filter =
@@ -443,14 +469,14 @@ namespace BarbellBarPlugin
                 FileName = "bar-parameters.json"
             };
 
-            if (sfd.ShowDialog(this) != DialogResult.OK)
+            if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
             try
             {
-                var dto = BarParametersDto.FromModel(parameters);
-                string json = JsonSerializer.Serialize(dto, _jsonOptions);
-                File.WriteAllText(sfd.FileName, json, Encoding.UTF8);
+                var parametersDto = BarParametersDto.FromModel(parameters);
+                var json = JsonSerializer.Serialize(parametersDto, _jsonOptions);
+                File.WriteAllText(saveFileDialog.FileName, json, Encoding.UTF8);
 
                 MessageBox.Show(
                     "Параметры успешно сохранены.",
@@ -458,11 +484,10 @@ namespace BarbellBarPlugin
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
                 MessageBox.Show(
-                    "Ошибка при сохранении: "
-                        + ex.Message,
+                    "Ошибка при сохранении: " + exception.Message,
                     "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -477,7 +502,7 @@ namespace BarbellBarPlugin
         /// </summary>
         private void LoadParametersFromFile()
         {
-            using var ofd = new OpenFileDialog
+            using var openFileDialog = new OpenFileDialog
             {
                 Title = "Загрузить параметры грифа",
                 Filter =
@@ -487,25 +512,24 @@ namespace BarbellBarPlugin
                 CheckFileExists = true
             };
 
-            if (ofd.ShowDialog(this) != DialogResult.OK)
+            if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
             try
             {
-                string json = File.ReadAllText(ofd.FileName, Encoding.UTF8);
+                var json = File.ReadAllText(openFileDialog.FileName, Encoding.UTF8);
 
-                BarParametersDto? dto =
-                    JsonSerializer.Deserialize<BarParametersDto>(
-                        json,
-                        _jsonOptions);
+                var parametersDto = JsonSerializer.Deserialize<BarParametersDto>(
+                    json,
+                    _jsonOptions);
 
-                if (dto == null)
+                if (parametersDto == null)
                 {
                     throw new InvalidDataException(
                         "Файл не содержит корректных параметров.");
                 }
 
-                var parameters = dto.ToModel();
+                var parameters = parametersDto.ToModel();
                 ApplyPreset(parameters);
 
                 var errors = BarParametersValidator.Validate(parameters);
@@ -538,11 +562,10 @@ namespace BarbellBarPlugin
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
                 MessageBox.Show(
-                    "Ошибка при загрузке файла: "
-                        + ex.Message,
+                    "Ошибка при загрузке файла: " + exception.Message,
                     "Ошибка",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);

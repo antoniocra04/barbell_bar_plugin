@@ -25,12 +25,12 @@ namespace BarbellBarPlugin.Kompas
         /// <summary>
         /// Текущий трёхмерный документ.
         /// </summary>
-        private ksDocument3D _doc3D;
+        private ksDocument3D _document3D;
 
         /// <summary>
         /// Верхняя деталь (part) текущего 3D-документа.
         /// </summary>
-        private ksPart _part;
+        private ksPart _topPart;
 
         /// <summary>
         /// Запускает KOMPAS, если он ещё не запущен,
@@ -43,27 +43,25 @@ namespace BarbellBarPlugin.Kompas
 
             try
             {
-                Type type =
-                    Type.GetTypeFromProgID("KOMPAS.Application.5");
+                var progIdType = Type.GetTypeFromProgID("KOMPAS.Application.5");
 
-                if (type == null)
+                if (progIdType == null)
                 {
                     throw new InvalidOperationException(
-                        "Не удалось получить ProgID "
-                            + "KOMPAS.Application.5.");
+                        "Не удалось получить ProgID KOMPAS.Application.5.");
                 }
 
-                object instance = Activator.CreateInstance(type);
+                var instance = Activator.CreateInstance(progIdType);
                 _kompas = (KompasObject)instance;
 
                 _kompas.Visible = true;
                 _kompas.ActivateControllerAPI();
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
                 throw new Exception(
                     "Не удалось запустить или подключиться к KOMPAS.",
-                    ex);
+                    exception);
             }
         }
 
@@ -81,10 +79,10 @@ namespace BarbellBarPlugin.Kompas
                     "Компас не подключён.");
             }
 
-            _doc3D = (ksDocument3D)_kompas.Document3D();
-            _doc3D.Create(false, true);
+            _document3D = (ksDocument3D)_kompas.Document3D();
+            _document3D.Create(false, true);
 
-            _part = (ksPart)_doc3D.GetPart(
+            _topPart = (ksPart)_document3D.GetPart(
                 (short)Part_Type.pTop_Part);
         }
 
@@ -100,20 +98,20 @@ namespace BarbellBarPlugin.Kompas
         /// </param>
         public virtual void CloseActiveDocument3D(bool save = false)
         {
-            if (_doc3D == null)
+            if (_document3D == null)
                 return;
 
             try
             {
-                InvokeClose(_doc3D, save);
+                InvokeClose(_document3D, save);
             }
             finally
             {
-                ReleaseComObject(_part);
-                _part = null;
+                ReleaseComObject(_topPart);
+                _topPart = null;
 
-                ReleaseComObject(_doc3D);
-                _doc3D = null;
+                ReleaseComObject(_document3D);
+                _document3D = null;
             }
         }
 
@@ -149,28 +147,25 @@ namespace BarbellBarPlugin.Kompas
             double diameter,
             string name)
         {
-            if (_part == null)
+            if (_topPart == null)
             {
                 // TODO:+ RSDN
                 throw new InvalidOperationException(
-                    "Часть не инициализирована. "
-                        + "Вызовите CreateDocument3D().");
+                    "Часть не инициализирована. Вызовите CreateDocument3D().");
             }
 
             if (startX < 0.0)
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(startX),
-                    "Начальная координата startX не может быть "
-                        + "меньше нуля.");
+                    "Начальная координата startX не может быть меньше нуля.");
             }
 
             if (endX <= startX)
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(endX),
-                    "Конечная координата endX должна быть больше "
-                        + "startX.");
+                    "Конечная координата endX должна быть больше startX.");
             }
 
             if (diameter <= 0.0)
@@ -188,10 +183,10 @@ namespace BarbellBarPlugin.Kompas
                     nameof(name));
             }
 
-            const double MinLength = 0.001;
+            const double MinimumLength = 0.001;
 
-            double length = endX - startX;
-            if (length <= MinLength)
+            var length = endX - startX;
+            if (length <= MinimumLength)
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(length),
@@ -199,66 +194,62 @@ namespace BarbellBarPlugin.Kompas
                         + $"{length:0.###} мм.");
             }
 
-            ksEntity basePlane =
-                _part.GetDefaultEntity(
-                    (short)Obj3dType.o3d_planeYOZ);
+            var basePlane = _topPart.GetDefaultEntity(
+                (short)Obj3dType.o3d_planeYOZ);
 
-            ksEntity offsetPlane =
-                _part.NewEntity(
-                    (short)Obj3dType.o3d_planeOffset);
+            var offsetPlane = _topPart.NewEntity(
+                (short)Obj3dType.o3d_planeOffset);
 
-            ksPlaneOffsetDefinition offsetDef =
+            var offsetDefinition =
                 (ksPlaneOffsetDefinition)offsetPlane.GetDefinition();
 
-            offsetDef.SetPlane(basePlane);
-            offsetDef.direction = true;
-            offsetDef.offset = startX;
+            offsetDefinition.SetPlane(basePlane);
+            offsetDefinition.direction = true;
+            offsetDefinition.offset = startX;
 
             offsetPlane.Create();
 
-            ksEntity sketch =
-                _part.NewEntity(
-                    (short)Obj3dType.o3d_sketch);
+            var sketch = _topPart.NewEntity(
+                (short)Obj3dType.o3d_sketch);
 
-            ksSketchDefinition sketchDef =
+            var sketchDefinition =
                 (ksSketchDefinition)sketch.GetDefinition();
 
-            sketchDef.SetPlane(offsetPlane);
+            sketchDefinition.SetPlane(offsetPlane);
             sketch.Create();
 
-            ksDocument2D doc2D =
-                (ksDocument2D)sketchDef.BeginEdit();
+            var document2D =
+                (ksDocument2D)sketchDefinition.BeginEdit();
 
-            doc2D.ksCircle(0, 0, diameter / 2.0, 1);
-            sketchDef.EndEdit();
+            document2D.ksCircle(0, 0, diameter / 2.0, 1);
+            sketchDefinition.EndEdit();
 
-            ksEntity extrude =
-                _part.NewEntity(
-                    (short)Obj3dType.o3d_baseExtrusion);
+            var extrusion = _topPart.NewEntity(
+                (short)Obj3dType.o3d_baseExtrusion);
 
-            ksBaseExtrusionDefinition extrudeDef =
-                (ksBaseExtrusionDefinition)extrude.GetDefinition();
+            var extrusionDefinition =
+                (ksBaseExtrusionDefinition)extrusion.GetDefinition();
 
-            extrudeDef.directionType =
+            extrusionDefinition.directionType =
                 (short)Direction_Type.dtNormal;
 
-            extrudeDef.SetSketch(sketch);
+            extrusionDefinition.SetSketch(sketch);
 
-            extrudeDef.SetSideParam(
+            extrusionDefinition.SetSideParam(
                 true,
                 (short)End_Type.etBlind,
                 length,
                 0,
                 false);
 
-            extrudeDef.SetThinParam(false, 0, 0, 0);
+            extrusionDefinition.SetThinParam(false, 0, 0, 0);
 
-            extrude.Create();
+            extrusion.Create();
 
             try
             {
-                dynamic extrudeDynamic = extrude;
-                extrudeDynamic.Name = name;
+                dynamic extrusionEntity = extrusion;
+                extrusionEntity.Name = name;
             }
             catch
             {
@@ -270,69 +261,69 @@ namespace BarbellBarPlugin.Kompas
         /// Вызывает закрытие документа через reflection/dynamic, чтобы
         /// не зависеть от точной сигнатуры метода Close в API.
         /// </summary>
-        /// <param name="doc">3D-документ KOMPAS.</param>
+        /// <param name="document">3D-документ KOMPAS.</param>
         /// <param name="save">Признак сохранения.</param>
-        private static void InvokeClose(object doc, bool save)
+        private static void InvokeClose(object document, bool save)
         {
-            Type type = doc.GetType();
+            var documentType = document.GetType();
 
-            MethodInfo closeBool =
-                type.GetMethod(
+            var closeWithBool =
+                documentType.GetMethod(
                     "Close",
                     new[] { typeof(bool) });
 
-            if (closeBool != null)
+            if (closeWithBool != null)
             {
-                closeBool.Invoke(doc, new object[] { save });
+                closeWithBool.Invoke(document, new object[] { save });
                 return;
             }
 
-            MethodInfo closeInt =
-                type.GetMethod(
+            var closeWithInt =
+                documentType.GetMethod(
                     "Close",
                     new[] { typeof(int) });
 
-            if (closeInt != null)
+            if (closeWithInt != null)
             {
-                closeInt.Invoke(doc, new object[] { save ? 1 : 0 });
+                closeWithInt.Invoke(document, new object[] { save ? 1 : 0 });
                 return;
             }
 
-            MethodInfo closeShort =
-                type.GetMethod(
+            var closeWithShort =
+                documentType.GetMethod(
                     "Close",
                     new[] { typeof(short) });
 
-            if (closeShort != null)
+            if (closeWithShort != null)
             {
-                closeShort.Invoke(
-                    doc,
+                closeWithShort.Invoke(
+                    document,
                     new object[] { (short)(save ? 1 : 0) });
                 return;
             }
 
-            MethodInfo closeNoArgs =
-                type.GetMethod(
+            var closeWithoutArgs =
+                documentType.GetMethod(
                     "Close",
                     Type.EmptyTypes);
 
-            if (closeNoArgs != null)
+            if (closeWithoutArgs != null)
             {
-                closeNoArgs.Invoke(doc, null);
+                closeWithoutArgs.Invoke(document, null);
                 return;
             }
 
-            dynamic d = doc;
+            dynamic dynamicDocument = document;
 
             try
             {
-                d.Close(save);
+                dynamicDocument.Close(save);
             }
             catch
             {
                 try
                 {
-                    d.Close();
+                    dynamicDocument.Close();
                 }
                 catch
                 {
@@ -343,17 +334,17 @@ namespace BarbellBarPlugin.Kompas
         /// <summary>
         /// Освобождает COM-объект (FinalReleaseComObject).
         /// </summary>
-        /// <param name="obj">COM-объект.</param>
-        private static void ReleaseComObject(object obj)
+        /// <param name="comObject">COM-объект.</param>
+        private static void ReleaseComObject(object comObject)
         {
-            if (obj == null)
+            if (comObject == null)
                 return;
 
-            if (Marshal.IsComObject(obj))
+            if (Marshal.IsComObject(comObject))
             {
                 try
                 {
-                    Marshal.FinalReleaseComObject(obj);
+                    Marshal.FinalReleaseComObject(comObject);
                 }
                 catch
                 {

@@ -11,7 +11,6 @@ namespace BarbellBarPlugin.Tests
         private const double Tolerance = 1e-6;
 
         [Test]
-        //TODO: RSDN+
         [Description(
             "Проверяет, что конструктор Builder выбрасывает " +
             "ArgumentNullException, если Wrapper равен null.")]
@@ -138,7 +137,6 @@ namespace BarbellBarPlugin.Tests
 
             Assert.Multiple(() =>
             {
-                //TODO: within to const+
                 Assert.That(
                     segments[0].StartX,
                     Is.EqualTo(0.0).Within(Tolerance));
@@ -187,7 +185,6 @@ namespace BarbellBarPlugin.Tests
 
             Assert.Multiple(() =>
             {
-                //TODO: RSDN+
                 Assert.That(
                     segments[0].Diameter,
                     Is.EqualTo(parameters.SleeveDiameter).Within(Tolerance));

@@ -107,7 +107,6 @@ namespace BarbellBarPlugin.Kompas
                 (short)Part_Type.pTop_Part);
         }
 
-        // TODO:+ RSDN
         /// <summary>
         /// Закрывает активный 3D-документ.
         /// После закрытия освобождает COM-объекты документа и детали
@@ -136,7 +135,6 @@ namespace BarbellBarPlugin.Kompas
             }
         }
 
-        // TODO:+ RSDN
         /// <summary>
         /// Создаёт цилиндр вдоль оси X между <paramref name="startX"/>
         /// и <paramref name="endX"/>.
@@ -170,7 +168,6 @@ namespace BarbellBarPlugin.Kompas
         {
             if (_topPart == null)
             {
-                // TODO:+ RSDN
                 throw new InvalidOperationException(
                     "Часть не инициализирована. Вызовите CreateDocument3D().");
             }
@@ -198,7 +195,6 @@ namespace BarbellBarPlugin.Kompas
 
             if (string.IsNullOrWhiteSpace(name))
             {
-                // TODO:+ RSDN
                 throw new ArgumentException(
                     "Имя сегмента не может быть пустым.",
                     nameof(name));
@@ -277,7 +273,6 @@ namespace BarbellBarPlugin.Kompas
             }
         }
 
-        // TODO:+ RSDN
         /// <summary>
         /// Вызывает закрытие документа через reflection/dynamic, чтобы
         /// не зависеть от точной сигнатуры метода Close в API.

@@ -86,7 +86,6 @@ namespace BarbellBarPlugin.Tests
         /// Логирует параметры создаваемого цилиндрического сегмента,
         /// добавляя их в коллекцию <see cref="Segments"/> вместо реального построения в KOMPAS.
         /// </summary>
-        //TODO: RSDN
         public override void CreateCylindricalSegment(
             double startX,
             double endX,

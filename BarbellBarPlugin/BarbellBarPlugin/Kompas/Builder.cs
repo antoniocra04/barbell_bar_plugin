@@ -21,7 +21,6 @@ namespace BarbellBarPlugin.Kompas
         /// </summary>
         private BarbellBarParameters _parameters = null!;
 
-        // TODO:+ RSDN
         /// <summary>
         /// Создаёт новый экземпляр <see cref="Builder"/>.
         /// </summary>

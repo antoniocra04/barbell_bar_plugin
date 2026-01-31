@@ -15,7 +15,6 @@ using BarbellBarPlugin.Core.Validation;
 
 namespace BarbellBarPlugin
 {
-    // TODO:+ XML
     /// <summary>
     /// Форма плагина для построения модели грифа в KOMPAS.
     /// </summary>
@@ -258,7 +257,6 @@ namespace BarbellBarPlugin
         {
             var text = textBox.Text.Trim().Replace(',', '.');
 
-            // TODO:+ RSDN
             if (!double.TryParse(
                     text,
                     NumberStyles.Float,

@@ -80,6 +80,7 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
+        //TODO: RSDN+
         [Description(
             "Проверяет, что конструктор BarbellBarParameters корректно " +
             "инициализирует все свойства.")]
@@ -123,6 +124,7 @@ namespace BarbellBarPlugin.Tests
         }
 
         [Test]
+        //TODO: RSDN+
         [Description(
             "Проверяет корректный расчёт свойства TotalLength " +
             "(суммарной длины грифа).")]

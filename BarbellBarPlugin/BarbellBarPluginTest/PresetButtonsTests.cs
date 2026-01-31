@@ -1,8 +1,5 @@
 ﻿using System.Drawing;
 using System.Reflection;
-using System.Threading;
-
-using NUnit.Framework;
 
 namespace BarbellBarPlugin.Tests
 {
